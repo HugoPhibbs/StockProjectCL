@@ -32,7 +32,7 @@ export class LoadApp {
     }
 
     public createMainMenu() : void{
-        assert(this._appEnvironment != null);
+        assert(this._appEnvironment != undefined);
         let mainMenuUILogic : MainMenuUILogic = new MainMenuUILogic(this._appEnvironment);
         mainMenuUILogic.start()
     }
@@ -41,17 +41,24 @@ export class LoadApp {
         return false;
     }
 
+    /**
+     * Handles creating a save file for the application. This is when a user wants to start a fresh
+     * version of the application, without any progress
+     * 
+     * @param userName string for the name of a user for application progress to be saved under
+     * @returns boolean if a save was created
+     */
     public createSave(userName : string) : boolean  {
         let user = new User(userName);
         this._appEnvironment = new AppEnvironment(this, user);
-        let serializedJSON = ess.serialize(this._appEnvironment);
+        let serializedJSON = ess.serialize(this._appEnvironment, User);
         let sessionDirectory : string = this.sessionDirectory(userName)
         fs.writeFileSync(sessionDirectory, serializedJSON, 'utf-8')
         return true;
     }
 
     private sessionDirectory(userName : string ) {
-        return `${this._workingDirectory}/${userName}.json`;
+        return `${this._workingDirectory}\\app_saves\\${userName}_save.json`;
     }
 
     /**
@@ -64,25 +71,6 @@ export class LoadApp {
         // Returns if a directory is valid or not
         // TODO implement!
         return true;
-    }
-
-    /**
-     * Checks if an inputted name is valid
-     * 
-     * @param nameToCheck string for the name to be checked
-     * @returns boolean if inputted name is valid
-     */
-    public static nameIsValid(nameToCheck : string) : boolean {
-        // Returns if a name is valid
-        if (nameToCheck.length == 0 || nameToCheck.length > 10){
-            return false;
-        }
-        else if (/^[a-zA-Z0-9]*$/.test(nameToCheck) == false) {
-            return false;
-        }
-        else {
-            return true;
-        }
     }
 
     /**
@@ -104,9 +92,7 @@ export class LoadApp {
         }
     }
 
-    static get nameRequirements() : string {
-        return "Name must have length between 1 and 10 (inclusive)\nAnd may only contain letters and numbers";
-    }
+
 
     get loadOptions() : string[][] {
         return this._loadOptions;
