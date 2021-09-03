@@ -1,17 +1,13 @@
 import { LoadApp } from '../../coreClasses/coreLogic/LoadApp';
-import {LoadAppUI} from '../uiFacade/LoadAppUI';
 import { PassThrough } from 'stream';
 import { UILogic } from './UILogic';
+import { CheckInput } from '../../coreClasses/coreLogic/CheckInput';
+import { UIMenu } from '../uiFacade/UIMenu';
 
 /**
  * Class to control UI to load the application
  */
 export class LoadAppUILogic extends UILogic {
-
-    /**
-     * LoadAppUI object that this class controls
-     */
-    private  _loadAppUI : LoadAppUI;
 
     /**
      * LoadApp object that is used to load this application
@@ -27,7 +23,6 @@ export class LoadAppUILogic extends UILogic {
      */
     constructor(loadApp : LoadApp) {
         super();
-        this._loadAppUI = new LoadAppUI(this);
         this._loadApp = loadApp;
     }
 
@@ -36,6 +31,7 @@ export class LoadAppUILogic extends UILogic {
      */
     public start() {
         let workingDirectory : string = this.enterWorkingDirectory();
+        this._loadApp.workingDirectory = workingDirectory;
         let loadCommand : string = this.enterLoadOption();
         let userName : string = this.enterName();
         this._loadApp.handleLoadCommand(loadCommand, userName);
@@ -50,7 +46,7 @@ export class LoadAppUILogic extends UILogic {
         let prompt : string = "Please enter a working directory for this application: ";
         // TODO change bellow to be more useful!
         let requirements : string = "Working directory invalid, please enter a correct directory!"
-        let workingDirectory = LoadAppUI.inputStrAndCheck(prompt, requirements, LoadApp.directoryIsValid);
+        let workingDirectory = UIMenu.inputStrAndCheck(prompt, requirements, LoadApp.directoryIsValid);
         return workingDirectory;
     }
 
@@ -62,7 +58,7 @@ export class LoadAppUILogic extends UILogic {
     public enterLoadOption() : string {
         let prompt : string = "Please enter a load option for this application!: ";
         let loadOptions : string[][] = this._loadApp.loadOptions;
-        let optionNum : number = LoadAppUI.enterOption(prompt, loadOptions);
+        let optionNum : number = UIMenu.enterOption(prompt, loadOptions);
         let optionCommand : string = super.handleOptionChoice(loadOptions, optionNum);
         return optionCommand;
     }
@@ -74,7 +70,7 @@ export class LoadAppUILogic extends UILogic {
      */
     public enterName() : string {
         let prompt : string = "Please enter a name for this save: ";
-        let userName : string = LoadAppUI.inputStrAndCheck(prompt, LoadApp.nameRequirements, LoadApp.nameIsValid);
+        let userName : string = UIMenu.inputStrAndCheck(prompt, CheckInput.nameRequirements, CheckInput.nameIsValid);
         return userName;
     }
 }
