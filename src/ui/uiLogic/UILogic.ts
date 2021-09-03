@@ -1,15 +1,9 @@
-export class UILogic {
+export abstract class UILogic {
 
     constructor() {
     }
 
-    public startInteraction() : void {
-
-    }
-
-    public endInteraction() : void  {
-
-    }
+    public abstract start() : void;
 
     /**
      * Handles numbered option that a user has selecting. 
