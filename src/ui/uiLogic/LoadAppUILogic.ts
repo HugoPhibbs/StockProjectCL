@@ -3,11 +3,28 @@ import {LoadAppUI} from '../uiFacade/LoadAppUI';
 import { PassThrough } from 'stream';
 import { UILogic } from './UILogic';
 
+/**
+ * Class to control UI to load the application
+ */
 export class LoadAppUILogic extends UILogic {
 
+    /**
+     * LoadAppUI object that this class controls
+     */
     private  _loadAppUI : LoadAppUI;
+
+    /**
+     * LoadApp object that is used to load this application
+     */
     private _loadApp : LoadApp;
 
+    /**
+     * Constructor for LoadAppULogic class
+     * <p>
+     * Creates a new LoadAppUI object for this class
+     * 
+     * @param loadApp LoadApp object that is used to load this application
+     */
     constructor(loadApp : LoadApp) {
         super();
         this._loadAppUI = new LoadAppUI(this);
@@ -24,8 +41,13 @@ export class LoadAppUILogic extends UILogic {
         this._loadApp.handleLoadCommand(loadCommand, userName);
     }
 
+    /**
+     * Handles asking a user to enter a working directory to save application progress to
+     * 
+     * @returns string for the chosen working directory that was chosen
+     */
     public enterWorkingDirectory() : string {
-        let prompt : string = "Please enter a working directory for this application";
+        let prompt : string = "Please enter a working directory for this application: ";
         // TODO change bellow to be more useful!
         let requirements : string = "Working directory invalid, please enter a correct directory!"
         let workingDirectory = LoadAppUI.inputStrAndCheck(prompt, requirements, LoadApp.directoryIsValid);
@@ -45,6 +67,11 @@ export class LoadAppUILogic extends UILogic {
         return optionCommand;
     }
 
+    /**
+     * Handles asking a user to enter their name, in order to save application progress
+     * 
+     * @returns string for the name that a user has chosen
+     */
     public enterName() : string {
         let prompt : string = "Please enter a name for this save: ";
         let userName : string = LoadAppUI.inputStrAndCheck(prompt, LoadApp.nameRequirements, LoadApp.nameIsValid);
