@@ -1,19 +1,32 @@
 import { UILogic } from "../uiLogic/UILogic";
 
-var pr = require('prompt-sync');
+var pr = require('prompt-sync')();
 
+/**
+ * Class that provides general methods for creating a ui for a cmd line application
+ * 
+ */
 export abstract class UIMenu {
 
     private _logic : UILogic;
 
+    /**
+     * Constructor for UI Menu
+     * 
+     * @param logic UILogic object that controls this class
+     */
     constructor(logic: UILogic) {
         this._logic = logic;
     }
     
-    public welcome(message : string): void {
+    /**
+     * Method to print a welcome message that is printed at the start of each screen. 
+     * 
+     * @param message string for a message to be displayed
+     */
+    public abstract welcome(message : string): void;
         // Prints welcoming options to a user
         // Should be first message user sees on this menu
-    }
 
     /**
      * Asks a user to input a string based on a prompt. If the string entered isn't valid, then user is notified, and is asked to enter a string until it is valid
@@ -26,7 +39,7 @@ export abstract class UIMenu {
     public static inputStrAndCheck(prompt : string, requirements : string, checkIsValidFunction : (str : string) => boolean) : string {
         let input : string = pr(prompt);
         // TODO have a way to exit entering a screen, eg enter BACK to back out of this
-        while (checkIsValidFunction(input)) {
+        while (!checkIsValidFunction(input)) {
             this.print(requirements);
             input = pr(prompt);
         }
@@ -40,12 +53,11 @@ export abstract class UIMenu {
      * @param numOptions number of options that a user can select. Must be an integer, and 
      * @param options string[][] nested array for the options that a user can select. 
      */
-     public static printOptions(requirements : string, options : string[][]) {
+     public static printOptions(options : string[][]) {
         let numOptions = options.length;
         // TODO, auto extract option messages before this!
-        this.print(requirements);
         for (let i = 0; i < numOptions; i++){
-            this.print(`${i}.${options[i][0]}`);
+            this.print(`${i+1}.${options[i][0]}`);
         }
     }
 
@@ -111,7 +123,7 @@ export abstract class UIMenu {
     public static enterOption(prompt: string, options : string[][]) : number {
         let requirements : string = this.optionNumRequirements(options.length);
         this.print(prompt);
-        this.printOptions(requirements, options)
+        this.printOptions(options)
         let optionNumIsValidFuncHandle : (num : number) => boolean = this.optionNumIsValidFuncHandle(options);
         return this.inputNumAndCheck(requirements, optionNumIsValidFuncHandle);
     }
