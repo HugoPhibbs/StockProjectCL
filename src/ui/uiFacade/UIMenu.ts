@@ -1,32 +1,24 @@
 import { UILogic } from "../uiLogic/UILogic";
+import { PassThrough } from 'stream';
 
 var pr = require('prompt-sync')();
 
 /**
- * Class that provides general methods for creating a ui for a cmd line application
+ * Class that provides general methods for creating a ui for a cmd line application. 
+ * Intended to be a utility class, hence why all methods are static
  * 
  */
 export abstract class UIMenu {
-
-    private _logic : UILogic;
-
-    /**
-     * Constructor for UI Menu
-     * 
-     * @param logic UILogic object that controls this class
-     */
-    constructor(logic: UILogic) {
-        this._logic = logic;
-    }
     
     /**
      * Method to print a welcome message that is printed at the start of each screen. 
      * 
      * @param message string for a message to be displayed
      */
-    public abstract welcome(message : string): void;
-        // Prints welcoming options to a user
-        // Should be first message user sees on this menu
+    public static welcome(message : string): void {
+        UIMenu.print('- - - - - - - - - - - - - - - -');
+        UIMenu.print(message);
+    }
 
     /**
      * Asks a user to input a string based on a prompt. If the string entered isn't valid, then user is notified, and is asked to enter a string until it is valid
@@ -46,7 +38,41 @@ export abstract class UIMenu {
         return input;
     }
 
-    
+    /**
+     * Handles asking a user a yes or no question
+     * 
+     * @param prompt string for a prompt to ask a user to answer the question
+     * @returns boolean according to the answer of the question. Yes corresponds to True, and No corresponds to False 
+     */
+    public static inputYesOrNo(prompt : string) : boolean {
+        prompt = prompt.concat(" (Y/N) ");
+        let input : string = pr(prompt);
+        let options : string[] = ["Y", "N"];
+        let requirements: string = "Please enter either Y or N (case sensitive)";
+        while (!options.includes(input)) {
+            this.print(requirements);
+            input = pr(prompt);
+        }
+        return this.handleYesOrNo(input);
+    }
+
+    /**
+     * Handles answer to a yes or no question asked to a user
+     * 
+     * @param input string for the answer received from a user
+     * @returns boolean, true if input us "Y" and false if input is "N". Otherwise throws exception
+     */
+    private static handleYesOrNo(input : string) : boolean {
+        switch (input) {
+            case "Y":
+                return true;
+            case "N":
+                return false;
+            default:
+                throw Error(`IA exception ${input} is an invalid response!`);
+        }
+    }
+
     /**
      * Prints options that a user can select that are based on their numbering
      * 
@@ -57,14 +83,14 @@ export abstract class UIMenu {
         let numOptions = options.length;
         // TODO, auto extract option messages before this!
         for (let i = 0; i < numOptions; i++){
-            this.print(`${i+1}.${options[i][0]}`);
+            this.print(`${i+1}. ${options[i][0]}`);
         }
     }
 
     /**
      * Asks a user to input a number based on a prompt. If the number entered isn't valid, then user is notified, and is asked to enter a number until it is valid. 
      * <p>
-     * Keeps requirements seperate so a user can enter numbers that dont necessarily reflect a chosen option, for example, entering a share price of a stock
+     * Keeps requirements separate so a user can enter numbers that dont necessarily reflect a chosen option, for example, entering a share price of a stock
      * 
      * @param requirements string for a message to tell a user the requirements of an inputted number
      * @param checkIsValidFunction Function to check if the inputted number is valid
@@ -130,7 +156,8 @@ export abstract class UIMenu {
     
 
     /**
-     * Prints a message to a user
+     * Prints a message to a user. Extrapolated to minimize refactoring if the printing out method changed
+     * for example, using process.stdout.write(msg) instead of console.log(msg)
      * 
      * @param msg string or number message to be printed
      */
