@@ -28,8 +28,7 @@ export class Holding  {
      */
     public dailyOpen(date : string) : number {
         // Throw an error if date is in the future, or if it is current day (dont think api can handle this with my subscription!)
-        let resp =  this.dailyOpenClose().then(
-            
+        let resp =  this.dailyOpenClose().then()
     }
 
     /**
