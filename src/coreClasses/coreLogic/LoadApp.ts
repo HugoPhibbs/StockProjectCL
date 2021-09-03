@@ -1,6 +1,8 @@
 import { AppEnvironment } from '../coreObjects/AppEnvironment';
 import { LoadAppUILogic } from '../../ui/uiLogic/LoadAppUILogic';
 import { User } from '../coreObjects/User';
+import { MainMenuUILogic } from '../../ui/uiLogic/MainMenuUILogic';
+import { assert } from 'console';
 const ps = require("prompt-sync");
 const ess = require('esserializer');
 var fs = require('fs');
@@ -9,9 +11,11 @@ const pr = ps();
 
 export class LoadApp {
 
+    private _appEnvironment!: AppEnvironment;
+
     private _loadOptions : string[][] = [
         ["Create a save", "CREATE"],
-        ["Load a save", "SAVE"]
+        ["Load a save", "LOAD"]
     ];
 
     private _workingDirectory : string | undefined;
@@ -24,6 +28,13 @@ export class LoadApp {
     public start() : void {
         let loadAppUILogic : LoadAppUILogic = new LoadAppUILogic(this);
         loadAppUILogic.start();
+        this.createMainMenu();
+    }
+
+    public createMainMenu() : void{
+        assert(this._appEnvironment != null);
+        let mainMenuUILogic : MainMenuUILogic = new MainMenuUILogic(this._appEnvironment);
+        mainMenuUILogic.start()
     }
 
     private loadSave(directory : string) : boolean {
@@ -32,8 +43,8 @@ export class LoadApp {
 
     public createSave(userName : string) : boolean  {
         let user = new User(userName);
-        let appEnvironment = new AppEnvironment(this, user);
-        let serializedJSON = ess.serialize(appEnvironment);
+        this._appEnvironment = new AppEnvironment(this, user);
+        let serializedJSON = ess.serialize(this._appEnvironment);
         let sessionDirectory : string = this.sessionDirectory(userName)
         fs.writeFileSync(sessionDirectory, serializedJSON, 'utf-8')
         return true;
@@ -89,7 +100,7 @@ export class LoadApp {
             this.loadSave(userName);
         }
         else {
-            throw new Error("IA exception, load command not valid!");
+            throw new Error(`IA exception, load command "${loadCommand}" not valid!`);
         }
     }
 
