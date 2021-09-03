@@ -1,5 +1,9 @@
 node_modules
 
-out
+js_out
 
 demo.js
+
+.vscode
+
+app_saves
