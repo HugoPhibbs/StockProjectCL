@@ -3,7 +3,7 @@ import { Holding } from "./Holding";
 /*
 Class to represent a collection of holdings
 */
-class Portfolio {
+export class Portfolio {
 
     private _holdings : Holding[];
     private _name : string;
@@ -26,6 +26,16 @@ class Portfolio {
     public totalChange(percentage: boolean) : number{
         // Returns the total change in portfolio
         return 1
+    }
+
+    public equals(obj : any) : boolean{
+        if (typeof obj != typeof this){ 
+            return false;
+        }
+        else {
+            obj = (obj as Portfolio);
+            return (obj.name == this.name);
+        }
     }
 
     get name() : string {
