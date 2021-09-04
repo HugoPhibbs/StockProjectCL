@@ -6,9 +6,16 @@
 export abstract class UILogic {
 
     /**
-     * Method to start a cmd line ui for a particular menu
+     * Method to start a cmd line ui for a particular menu. 
+     * <p>
+     * Intended to be the method that other classes use when calling an instance of this class to create their interface for a user
      */
     public abstract start() : void;
+    
+    /** 
+     * Method to start an interaction with a user
+     */
+    protected abstract interact() : void;
 
     /**
      * Handles numbered option that a user has selecting. 
@@ -33,5 +40,14 @@ export abstract class UILogic {
      */
     public unknownCommand(command : string) : void {
         throw new Error(`IA Exception, ${command} is an unknown command!`);
+    }
+
+    /**
+     * Handles throwing an illegal state exception
+     * 
+     * @param msg Error message to be displayed
+     */
+    public illegalStateException(msg : string) : void {
+        throw new Error(`IS exception, message:  ${msg}`);
     }
 }
