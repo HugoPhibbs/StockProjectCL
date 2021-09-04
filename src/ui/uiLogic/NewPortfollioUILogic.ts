@@ -71,8 +71,8 @@ export class NewPortfolioUILogic extends UILogic {
      * @returns boolean for whether a user would like to create another portfolio or not. True for creating, False for leaving
      */
     private askToReturn() : boolean {
-        let prompt : string = "Would you like to stay and create another Portfolio?";
-        let response : boolean = UIMenu.inputYesOrNo(prompt);
+        let message : string = "Would you like to stay and create another Portfolio?";
+        let response : boolean = UIMenu.inputYesOrNo(message);
         return response;
     }
 
