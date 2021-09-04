@@ -2,6 +2,7 @@ import { CheckInput } from '../coreLogic/CheckInput';
 import { Portfolio } from './Portfolio';
 import { assert } from 'console';
 import { PassThrough } from 'stream';
+import { AppEnvironment } from './AppEnvironment';
 
 /**
  * Class to manage a collection of Portfolios for a user
@@ -12,10 +13,6 @@ export class PortfolioManager {
      * Portfolio objects contained in this manager
      */
     private _portfolios : Portfolio[] = [];
-
-    constructor(){ 
-
-    }
 
     /**
      * Attempts to create a new portfolio, and then adds it to this manager
