@@ -30,6 +30,14 @@ export class LoadAppUILogic extends UILogic {
      * Handles what should be displayed to a user on the start of the application
      */
     public start() {
+        UIMenu.welcome("Loading the app");
+        this.interact();
+    }
+
+    /**
+     * Interacts with a user
+     */
+    protected interact(): void {
         let workingDirectory : string = this.enterWorkingDirectory();
         this._loadApp.workingDirectory = workingDirectory;
         let loadCommand : string = this.enterLoadOption();
@@ -43,10 +51,10 @@ export class LoadAppUILogic extends UILogic {
      * @returns string for the chosen working directory that was chosen
      */
     public enterWorkingDirectory() : string {
-        let prompt : string = "Please enter a working directory for this application: ";
+        let message : string = "Please enter a working directory for this application";
         // TODO change bellow to be more useful!
         let requirements : string = "Working directory invalid, please enter a correct directory!"
-        let workingDirectory = UIMenu.inputStrAndCheck(prompt, requirements, LoadApp.directoryIsValid);
+        let workingDirectory = UIMenu.inputStrAndCheck(message, requirements, LoadApp.directoryIsValid);
         return workingDirectory;
     }
 
@@ -56,9 +64,9 @@ export class LoadAppUILogic extends UILogic {
      * @returns string for command to load the application
      */
     public enterLoadOption() : string {
-        let prompt : string = "Please enter a load option for this application!: ";
+        let message : string = "Please enter a load option for this application!";
         let loadOptions : string[][] = this._loadApp.loadOptions;
-        let optionNum : number = UIMenu.enterOption(prompt, loadOptions);
+        let optionNum : number = UIMenu.inputOption(message, loadOptions);
         let optionCommand : string = super.handleOptionChoice(loadOptions, optionNum);
         return optionCommand;
     }
@@ -69,8 +77,8 @@ export class LoadAppUILogic extends UILogic {
      * @returns string for the name that a user has chosen
      */
     public enterName() : string {
-        let prompt : string = "Please enter a name for this save: ";
-        let userName : string = UIMenu.inputStrAndCheck(prompt, CheckInput.nameRequirements, CheckInput.nameIsValid);
+        let message : string = "Please enter a name for this save";
+        let userName : string = UIMenu.inputStrAndCheck(message, CheckInput.nameRequirements, CheckInput.nameIsValid);
         return userName;
     }
 }
