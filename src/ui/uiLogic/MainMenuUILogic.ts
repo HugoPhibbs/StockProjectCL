@@ -2,12 +2,13 @@ import { AppEnvironment } from '../../coreClasses/coreObjects/AppEnvironment';
 import { UILogic } from './UILogic';
 import { UIMenu } from '../uiFacade/UIMenu';
 import { NewPortfolioUILogic } from './NewPortfollioUILogic';
+import { ViewPortfoliosUILogic } from './ViewPortfoliosUILogic';
+import { assert } from 'console';
 
 /**
  * Handles logic relating to the UI of the main menu for this application
  */
 export class MainMenuUILogic extends UILogic{
-    
 
     /**
      * Options that a user can choose on the main menu. 
@@ -43,11 +44,19 @@ export class MainMenuUILogic extends UILogic{
      */
     public start() : void {
         UIMenu.welcome("Welcome to the main menu!");
-        let prompt : string = "Select an option to continue";
-        let chosenOption : number = UIMenu.enterOption(prompt, this._options);
+        this.interact();
+    }
+
+    /**
+     * Interacts with a user
+     */
+    protected interact(): void {
+        let message : string = "Select an option to continue";
+        let chosenOption : number = UIMenu.inputOption(message, this._options);
         let chosenCommand: string = super.handleOptionChoice(this._options, chosenOption);
         this.handleChosenCommand(chosenCommand);
     }
+    
 
     /**
      * Handles command choice that a user has chosen on the main menu
@@ -57,17 +66,14 @@ export class MainMenuUILogic extends UILogic{
     private handleChosenCommand(chosenCommand : string) {
         switch (chosenCommand){ 
             case "VIEW_PORTFOLIOS":
-                // Do something
+                this.viewPortfolios();
                 break;
             case "SEARCH_SYMBOLS":
                 // Do something
                 // Create ui to search symbols
                 break;
             case "ADD_PORTFOLIO":
-                let newPortfolioUILogic : NewPortfolioUILogic = new NewPortfolioUILogic(this._appEnvironment);
-                newPortfolioUILogic.start();
-                // Do something
-                // Create ui to add a portfolio
+                this.addPortfolio();
                 break;
             case "CLOSE_APP":
                 // Do something
@@ -76,5 +82,23 @@ export class MainMenuUILogic extends UILogic{
             default:
                 super.unknownCommand(chosenCommand)
         }
+    }
+
+    /** 
+     * Handles creating a new interface to view portfolios
+     */
+    private viewPortfolios() : void {
+        assert(this._appEnvironment != undefined);
+        let viewPortfoliosUILogic : ViewPortfoliosUILogic = new ViewPortfoliosUILogic(this._appEnvironment);
+        viewPortfoliosUILogic.start();
+    }
+    /**
+     * Handles when a user would like to create a new portfolio. 
+     * 
+     * Creates a new interface
+     */
+    private addPortfolio() : void {
+        let newPortfolioUILogic : NewPortfolioUILogic = new NewPortfolioUILogic(this._appEnvironment);
+        newPortfolioUILogic.start();
     }
 }
