@@ -18,6 +18,9 @@ export class CheckInput {
         }
     }   
 
+    /**
+     * Getter method for valid name requirements
+     */
     static get nameRequirements() : string {
         return "Name must have length between 1 and 10 (inclusive)\nAnd may only contain letters and numbers";
     }
