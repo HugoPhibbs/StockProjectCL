@@ -94,9 +94,51 @@ export class PortfolioManager {
         }
     }
 
-    public editPortfolioName(newName : string) : boolean {
-        // TODO implement!
-        return false;
+    /**
+     * Finds if an inputted new portfolio name is valid
+     * 
+     * @param newName string for the new name of a portfolio
+     * @param portfolio Portfolio object to be checked if the new name is valid
+     * @param portfolioManager PortfolioManager object that contains portfolio
+     * @returns boolean if the new name is valid
+     */
+    public static newPortfolioNameIsValid(newName : string, portfolio : Portfolio, portfolioManager : PortfolioManager) : boolean {
+        if (!CheckInput.nameIsValid(newName)) {
+            return false;
+        }
+        else {
+            if (portfolio.name == newName){
+                return true;
+            }
+            else {
+                (!portfolioManager.includes(newName));
+            }
+        }
+    }
+
+
+    /**
+     * Handles changing the name of a portfolio. Check if the name is valid before making the change
+     * 
+     * note: made static so it can be passed around as a handle easily. Couldn't get the way I wanted with a non static function
+     * 
+     * @param newName string for the new name of a portfolio
+     * @param portfolio Portfolio object to have it's name changed
+     * @param portfolioManager PortfolioManager object that the portfolio belongs to
+     * @returns boolean if the name change was completed
+     */
+    public static changePortfolioName(newName : string, portfolio : Portfolio, portfolioManager : PortfolioManager) : boolean {
+        if (PortfolioManager.newPortfolioNameIsValid(newName, portfolio, portfolioManager)){
+            portfolio.name = newName;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    static get portfolioNameRequirements() : string {
+        return `A) Portfolio ${CheckInput.nameRequirements}\nand B) must not clash with any other portfolios already existing`; 
     }
 
     /**
@@ -105,7 +147,7 @@ export class PortfolioManager {
      * @param portfolioName string for the name of the Portfolio object being looked for
      * @returns Portfolio object if it was found, otherwise null
      */
-    private findPortfolio(portfolioName : string) : Portfolio {
+    public findPortfolio(portfolioName : string) : Portfolio {
         for (let i = 0; i < this._portfolios.length; i ++){
             let currPortfolio : Portfolio = this._portfolios[i];
             if (currPortfolio.name == portfolioName){
