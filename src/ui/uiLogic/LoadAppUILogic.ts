@@ -7,7 +7,7 @@ import { UIMenu } from '../uiFacade/UIMenu';
 /**
  * Class to control UI to load the application
  */
-export class LoadAppUILogic extends UILogic {
+export class LoadAppUI extends UILogic {
 
     /**
      * LoadApp object that is used to load this application

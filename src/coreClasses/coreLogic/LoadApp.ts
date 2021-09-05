@@ -1,5 +1,5 @@
 import { AppEnvironment } from '../coreObjects/AppEnvironment';
-import { LoadAppUI } from '../../ui/uiLogic/LoadAppUI';
+import { LoadAppUI } from '../../ui/uiLogic/LoadAppUILogic';
 import { User } from '../coreObjects/User';
 import { MainMenuUI } from '../../ui/uiLogic/MainMenuUI';
 import { assert } from 'console';

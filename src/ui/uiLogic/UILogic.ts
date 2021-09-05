@@ -1,3 +1,5 @@
+import { PortfolioManager } from "../../coreClasses/coreObjects/PorfolioManager";
+
 /**
  * Abstract class to handle controlling of the cmd line ui. 
  * <p>
@@ -50,4 +52,6 @@ export abstract class UILogic {
     public illegalStateException(msg : string) : void {
         throw new Error(`IS exception, message:  ${msg}`);
     }
+
+
 }
