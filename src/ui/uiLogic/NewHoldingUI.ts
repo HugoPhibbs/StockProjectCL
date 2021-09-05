@@ -1,4 +1,5 @@
 import { PassThrough } from 'stream';
+import { UIMenu } from '../uiFacade/UIMenu';
 export class NewHoldingUI {
 
     constructor() {
@@ -7,6 +8,9 @@ export class NewHoldingUI {
 
     private enterSymbol() : string  {
         // Asks user to enter a symbol for this holding, then returns this name, if valid
+        let message : string = "Enter symbol for this holding";
+        
+        let symbol : string = UIMenu.inputStrAndCheck(message, )
         return ""
     }
     
