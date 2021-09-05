@@ -4,12 +4,14 @@ import { PortfolioManager } from '../../coreClasses/coreObjects/PorfolioManager'
 import { Portfolio } from '../../coreClasses/coreObjects/Portfolio';
 import { UILogic } from './UILogic';
 import { assert } from 'console';
-import { MainMenuUILogic } from './MainMenuUILogic';
+import { MainMenuUI } from './MainMenuUILogic';
+import { CheckInput } from '../../coreClasses/coreLogic/CheckInput';
+import { ViewPortfoliosUI } from './ViewPortfoliosUILogic';
 
 /**
  * Class to handle cmd line ui interface to edit a Portfolio\
  */
-export class EditPortfolioUILogic extends UILogic {
+export class EditPortfolioUI extends UILogic {
 
     /**
      * string[][] nested array containing descriptions that of the options that a user can
@@ -17,9 +19,10 @@ export class EditPortfolioUILogic extends UILogic {
      */
     private  _options : string[][] = [
         ["Change portfolio name", "CHANGE_NAME"], 
+        ["Add a holding", "ADD_HOLDING"],
         ["Remove a holding", "REMOVE_HOLDING"], 
         ["Delete portfolio", "DELETE_PORTFOLIO"], 
-        ["Return to view portfolio", "VIEW_PORTFOLIOS"]
+        ["Return to view portfolios", "VIEW_PORTFOLIOS"]
     ];
 
     /**
@@ -62,10 +65,15 @@ export class EditPortfolioUILogic extends UILogic {
      * Interacts with a user=
      */
     protected interact(): void {
-        let message : string = "Please select an option to interact with this Portfolio"
+        let message : string = "Please select an option..."
         let chosenOption : number = UIMenu.inputOption(message, this._options);
         let chosenCommand : string = super.handleOptionChoice(this._options, chosenOption);
         this.handleCommand(chosenCommand); 
+    }
+
+
+    private displayHoldings() {
+        // handles displaying holdings to a user
     }
 
     /**
@@ -76,7 +84,9 @@ export class EditPortfolioUILogic extends UILogic {
     private handleCommand(command : string) : void {
         switch (command) {
             case "CHANGE_NAME":
-                //
+                this.changeName();
+                this.success();
+                this.interact();
                 break;
             case "REMOVE_HOLDING":
                 //
@@ -116,6 +126,27 @@ export class EditPortfolioUILogic extends UILogic {
     }
 
     /**
+     * Handles changing the name of a portfolio
+     */
+    private changeName() : void  {
+        let message : string = "Please enter a new name for this portfolio";
+        let requirements : string  = PortfolioManager.portfolioNameRequirements;
+        let checkIsValidFunction : (portfolioName : string) => boolean = (portfolioName : string) => {
+            return PortfolioManager.newPortfolioNameIsValid(portfolioName, this._portfolio, this._portfolioManager);
+        }
+        let newName : string = UIMenu.inputStrAndCheck(message, requirements, checkIsValidFunction);
+        assert(PortfolioManager.changePortfolioName(newName, this._portfolio, this._portfolioManager) == true);
+    }
+
+    /**
+     * Handles printing a success message indicating a successful edit of a portfolio
+     */
+    public success() : void {
+        let message : string = "Portfolio successfully edited!";
+        UIMenu.print(message);
+    }
+
+    /**
      * Handles deleting the current portfolio
      */
     private handleDeletion() : void {
@@ -137,7 +168,7 @@ export class EditPortfolioUILogic extends UILogic {
         //Handles returning to the main menu
         assert(this._appEnvironment != undefined);
         UIMenu.print("Returning to viewing portfolios!...");
-        let editPortfolioUILogic : EditPortfolioUILogic = new EditPortfolioUILogic(this._appEnvironment, this._portfolio);
-        editPortfolioUILogic.start();
+        let viewPortfolioUI : ViewPortfoliosUI = new ViewPortfoliosUI(this._appEnvironment);
+        viewPortfolioUI.start();
     }
 }
