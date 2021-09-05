@@ -131,7 +131,7 @@ export abstract class UIMenu {
      * @returns number that is entered, will be valid
      */
     private static inputNumAndCheck(requirements : string, checkIsValidFunction : (num:number) => boolean) : number {
-        let prompt : string = this.stylePrompt("Enter option option number");
+        let prompt : string = this.stylePrompt("Enter an option number");
         let input : number = pr(prompt);
         // Need to check number is actually a number
         while (!checkIsValidFunction(input)) {
