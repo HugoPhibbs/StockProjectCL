@@ -5,8 +5,8 @@ import { AppEnvironment } from '../../coreClasses/coreObjects/AppEnvironment';
 import { UIMenu } from '../uiFacade/UIMenu';
 import { PortfolioManager } from '../../coreClasses/coreObjects/PorfolioManager';
 import { PassThrough } from 'stream';
-import { MainMenuUI } from './MainMenuUILogic';
-import { ViewPortfoliosUI } from './ViewPortfoliosUILogic';
+import { MainMenuUI } from './MainMenuUI';
+import { ViewPortfoliosUI } from './ViewPortfoliosUI';
 
 /**
  * Class to handle ui logic of creating a new portfolio

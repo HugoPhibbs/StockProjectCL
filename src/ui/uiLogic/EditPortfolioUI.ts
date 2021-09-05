@@ -4,9 +4,9 @@ import { PortfolioManager } from '../../coreClasses/coreObjects/PorfolioManager'
 import { Portfolio } from '../../coreClasses/coreObjects/Portfolio';
 import { UILogic } from './UILogic';
 import { assert } from 'console';
-import { MainMenuUI } from './MainMenuUILogic';
+import { MainMenuUI } from './MainMenuUI';
 import { CheckInput } from '../../coreClasses/coreLogic/CheckInput';
-import { ViewPortfoliosUI } from './ViewPortfoliosUILogic';
+import { ViewPortfoliosUI } from './ViewPortfoliosUI';
 
 /**
  * Class to handle cmd line ui interface to edit a Portfolio\

@@ -2,13 +2,13 @@ import { accessSync } from 'fs';
 import { AppEnvironment } from '../../coreClasses/coreObjects/AppEnvironment';
 import { Portfolio } from '../../coreClasses/coreObjects/Portfolio';
 import { assert } from 'console';
-import { MainMenuUI } from './MainMenuUILogic';
+import { MainMenuUI } from './MainMenuUI';
 import { UILogic } from './UILogic';
 import { UIMenu } from '../uiFacade/UIMenu';
 import { PortfolioManager } from '../../coreClasses/coreObjects/PorfolioManager';
-import { EditPortfolioUI } from './EditPortfolioUILogic';
+import { EditPortfolioUI } from './EditPortfolioUI';
 import { CheckInput } from '../../coreClasses/coreLogic/CheckInput';
-import { NewPortfolioUI } from './NewPortfollioUILogic';
+import { NewPortfolioUI } from './NewPortfollioUI';
 import { formatIV2HistoricTradeResultRaw } from '@polygon.io/client-js/lib/rest/stocks/v2HistoricTrades';
 
 export class ViewPortfoliosUI extends UILogic{

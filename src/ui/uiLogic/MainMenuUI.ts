@@ -1,8 +1,8 @@
 import { AppEnvironment } from '../../coreClasses/coreObjects/AppEnvironment';
 import { UILogic } from './UILogic';
 import { UIMenu } from '../uiFacade/UIMenu';
-import { NewPortfolioUI } from './NewPortfollioUILogic';
-import { ViewPortfoliosUI } from './ViewPortfoliosUILogic';
+import { NewPortfolioUI } from './NewPortfollioUI';
+import { ViewPortfoliosUI } from './ViewPortfoliosUI';
 import { assert } from 'console';
 
 /**
