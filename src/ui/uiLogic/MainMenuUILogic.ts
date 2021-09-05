@@ -1,14 +1,14 @@
 import { AppEnvironment } from '../../coreClasses/coreObjects/AppEnvironment';
 import { UILogic } from './UILogic';
 import { UIMenu } from '../uiFacade/UIMenu';
-import { NewPortfolioUILogic } from './NewPortfollioUILogic';
-import { ViewPortfoliosUILogic } from './ViewPortfoliosUILogic';
+import { NewPortfolioUI } from './NewPortfollioUILogic';
+import { ViewPortfoliosUI } from './ViewPortfoliosUILogic';
 import { assert } from 'console';
 
 /**
  * Handles logic relating to the UI of the main menu for this application
  */
-export class MainMenuUILogic extends UILogic{
+export class MainMenuUI extends UILogic{
 
     /**
      * Options that a user can choose on the main menu. 
@@ -18,7 +18,6 @@ export class MainMenuUILogic extends UILogic{
     private _options = [
         ["View Portfolios", "VIEW_PORTFOLIOS"], 
         ["Search Symbols", "SEARCH_SYMBOLS"],
-        ["Add Portfolio", "ADD_PORTFOLIO"], 
         ["Close app" , "CLOSE_APP"]
     ]
 
@@ -72,9 +71,6 @@ export class MainMenuUILogic extends UILogic{
                 // Do something
                 // Create ui to search symbols
                 break;
-            case "ADD_PORTFOLIO":
-                this.addPortfolio();
-                break;
             case "CLOSE_APP":
                 // Do something
                 // Ask the user if they would like to close, before closing
@@ -89,16 +85,7 @@ export class MainMenuUILogic extends UILogic{
      */
     private viewPortfolios() : void {
         assert(this._appEnvironment != undefined);
-        let viewPortfoliosUILogic : ViewPortfoliosUILogic = new ViewPortfoliosUILogic(this._appEnvironment);
+        let viewPortfoliosUILogic : ViewPortfoliosUI = new ViewPortfoliosUI(this._appEnvironment);
         viewPortfoliosUILogic.start();
-    }
-    /**
-     * Handles when a user would like to create a new portfolio. 
-     * 
-     * Creates a new interface
-     */
-    private addPortfolio() : void {
-        let newPortfolioUILogic : NewPortfolioUILogic = new NewPortfolioUILogic(this._appEnvironment);
-        newPortfolioUILogic.start();
     }
 }
