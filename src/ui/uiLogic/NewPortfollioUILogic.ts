@@ -5,13 +5,13 @@ import { AppEnvironment } from '../../coreClasses/coreObjects/AppEnvironment';
 import { UIMenu } from '../uiFacade/UIMenu';
 import { PortfolioManager } from '../../coreClasses/coreObjects/PorfolioManager';
 import { PassThrough } from 'stream';
-import { MainMenuUILogic } from './MainMenuUILogic';
-
+import { MainMenuUI } from './MainMenuUILogic';
+import { ViewPortfoliosUI } from './ViewPortfoliosUILogic';
 
 /**
  * Class to handle ui logic of creating a new portfolio
  */
-export class NewPortfolioUILogic extends UILogic {
+export class NewPortfolioUI extends UILogic {
 
     /**
      * AppEnvironment object for this instance of the application
@@ -40,7 +40,7 @@ export class NewPortfolioUILogic extends UILogic {
      */
     private enterName() : string{
         // Asks user to enter a name
-        let prompt : string = "Enter a name for a new portfolio: "
+        let prompt : string = "Enter a name for a new portfolio"
         let requirements : string = `Portfolio ${CheckInput.nameRequirements}, and must not clash with any pre-existing portfolio!`;
         let canAddPortfolio = (name : string) : boolean => {return this._portfolioManager.canAddPortfolio(name)}
         let portfolioName : string = UIMenu.inputStrAndCheck(prompt, requirements, canAddPortfolio);
@@ -86,16 +86,16 @@ export class NewPortfolioUILogic extends UILogic {
             this.interact();
         }
         else {
-            this.returnToMainMenu();
+            this.returnToViewPortfolios();
         }
     }
 
     /**
-     * Handles returning back to the main menu.
+     * Handles returning to viewing portfolios
      */
-    private returnToMainMenu(){ 
-        let mainMenuUILogic : MainMenuUILogic = new MainMenuUILogic(this._appEnvironment);
-        mainMenuUILogic.start()
+    private returnToViewPortfolios() : void { 
+        let viewPortfoliosUI : ViewPortfoliosUI = new ViewPortfoliosUI(this._appEnvironment);
+        viewPortfoliosUI.start()
     }
 
     /**
