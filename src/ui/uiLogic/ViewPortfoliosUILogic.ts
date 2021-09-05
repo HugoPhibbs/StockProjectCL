@@ -2,16 +2,20 @@ import { accessSync } from 'fs';
 import { AppEnvironment } from '../../coreClasses/coreObjects/AppEnvironment';
 import { Portfolio } from '../../coreClasses/coreObjects/Portfolio';
 import { assert } from 'console';
-import { MainMenuUILogic } from './MainMenuUILogic';
+import { MainMenuUI } from './MainMenuUILogic';
 import { UILogic } from './UILogic';
 import { UIMenu } from '../uiFacade/UIMenu';
 import { PortfolioManager } from '../../coreClasses/coreObjects/PorfolioManager';
-import { EditPortfolioUILogic } from './EditPortfolioUILogic';
+import { EditPortfolioUI } from './EditPortfolioUILogic';
 import { CheckInput } from '../../coreClasses/coreLogic/CheckInput';
-export class ViewPortfoliosUILogic extends UILogic{
+import { NewPortfolioUI } from './NewPortfollioUILogic';
+import { formatIV2HistoricTradeResultRaw } from '@polygon.io/client-js/lib/rest/stocks/v2HistoricTrades';
+
+export class ViewPortfoliosUI extends UILogic{
 
     private _options : string[][] = [
-        ["Edit a portfolio", "EDIT_PORTFOLIO"], 
+        ["Select/edit a portfolio", "EDIT_PORTFOLIO"], 
+        ["Add portfolio", "ADD_PORTFOLIO"],
         ["Return to main menu", "RETURN_TO_MAIN"]
     ];
 
@@ -21,6 +25,11 @@ export class ViewPortfoliosUILogic extends UILogic{
 
     private _portfolioManager : PortfolioManager;
 
+    /**
+     * Constructor
+     * 
+     * @param appEnvironment AppEnvironment object for this application
+     */
     constructor(appEnvironment : AppEnvironment) {
         super();
         this._appEnvironment = appEnvironment;
@@ -42,7 +51,7 @@ export class ViewPortfoliosUILogic extends UILogic{
      * Handles Interacting with a user
      */ 
     protected interact(): void {
-        let message : string = "Please select an option relating to these portfolios!";
+        let message : string = "Please select an option!";
         let chosenOption : number = UIMenu.inputOption(message, this._options);
         let chosenCommand : string = super.handleOptionChoice(this._options, chosenOption);
         this.handleCommand(chosenCommand);
@@ -67,6 +76,9 @@ export class ViewPortfoliosUILogic extends UILogic{
             case "RETURN_TO_MAIN":
                 this.returnToMainMenu();
                 break;
+            case "ADD_PORTFOLIO":
+                this.addPortfolio();
+                break;
             default:
                 super.unknownCommand(command);
         }
@@ -76,22 +88,31 @@ export class ViewPortfoliosUILogic extends UILogic{
      * Handles asking a user which portfolio they would like to select and then edit
      */
     private choosePortfolio() : void {
-        // TODO handle case where there are no portfolios to edit!
-        let message : string = "Please enter the name of the portfolio that you wish to edit!";
-        let requirements : string = "Portfolio name must belong to a portfolio shown above! (case sensitive)";
-        let chosenPortfolio : string = UIMenu.inputStrAndCheck(message, requirements, this.portfolioNameIsValid);
-        // TODO need to get a chosenPortfolio object from PortfolioManager!
+        if (this.canChooseAPortfolio()){
+            let message : string = "Please enter the name of the portfolio that you wish to edit!";
+            let requirements : string = "Portfolio name must match a portfolio that already exists!";
+            let portfolioManager : PortfolioManager = this._portfolioManager;
+            let checkIsValidFunction : (portfolioName : string) => boolean = (portfolioName : string) => {
+                return CheckInput.nameIsValid(portfolioName) && 
+                        this._portfolioManager.includes(portfolioName);
+            }
+            let portfolioName : string = UIMenu.inputStrAndCheck(message, requirements, checkIsValidFunction);
+            let chosenPortfolio : Portfolio = this._portfolioManager.findPortfolio(portfolioName);
+            this.editPortfolio(chosenPortfolio);
+        }
+        else {              
+            let msg : string = "No portfolios to select!"
+            UIMenu.print(msg);
+            this.interact();
+        }
     }
 
     /**
-     * Checks if the inputted portfolio name is valid. Extrapolated into a function just to keep things less cluttered.
-     * PortfolioManager.includes(name) crashes with empty input, hence CheckInputNameIsValid accounts for this
-     *   
-     * @param portfolioName string the name of the portfolio to be checked
-     * @returns boolean if the inputted portfolio name is valid
+     * Finds out of if a user can choose a portfolio. Only false if there are no portfolios to select in the first place!
+     * @returns boolean if a user can choose a portfolio
      */
-    private portfolioNameIsValid(portfolioName : string) : boolean {
-        return (portfolioName != undefined) && this._portfolioManager.includes(portfolioName);
+    private canChooseAPortfolio() : boolean {
+        return (this._portfolios.length > 0);
     }
 
     /**
@@ -101,8 +122,18 @@ export class ViewPortfoliosUILogic extends UILogic{
      */
     private editPortfolio(portfolio : Portfolio) : void {
         assert(this._appEnvironment != undefined);
-        let editPortfolioUILogic : EditPortfolioUILogic = new EditPortfolioUILogic(this._appEnvironment, portfolio);
+        let editPortfolioUILogic : EditPortfolioUI = new EditPortfolioUI(this._appEnvironment, portfolio);
         editPortfolioUILogic.start();
+    }
+
+    /**
+     * Handles when a user would like to create a new portfolio. 
+     * 
+     * Creates a new interface
+     */
+    private addPortfolio() : void {
+        let newPortfolioUILogic : NewPortfolioUI = new NewPortfolioUI(this._appEnvironment);
+        newPortfolioUILogic.start();
     }
 
     /**
@@ -110,7 +141,7 @@ export class ViewPortfoliosUILogic extends UILogic{
      */
     private returnToMainMenu() : void {
         assert(this._appEnvironment != undefined);
-        let mainMenuUILogic : MainMenuUILogic = new MainMenuUILogic(this._appEnvironment);
+        let mainMenuUILogic : MainMenuUI = new MainMenuUI(this._appEnvironment);
         mainMenuUILogic.start();
     }
 }
