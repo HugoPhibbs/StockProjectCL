@@ -1,7 +1,7 @@
 import { AppEnvironment } from '../coreObjects/AppEnvironment';
-import { LoadAppUILogic } from '../../ui/uiLogic/LoadAppUILogic';
+import { LoadAppUI } from '../../ui/uiLogic/LoadAppUI';
 import { User } from '../coreObjects/User';
-import { MainMenuUILogic } from '../../ui/uiLogic/MainMenuUILogic';
+import { MainMenuUI } from '../../ui/uiLogic/MainMenuUI';
 import { assert } from 'console';
 const ps = require("prompt-sync");
 const ess = require('esserializer');
@@ -26,14 +26,14 @@ export class LoadApp {
     }
 
     public start() : void {
-        let loadAppUILogic : LoadAppUILogic = new LoadAppUILogic(this);
+        let loadAppUILogic : LoadAppUI = new LoadAppUI(this);
         loadAppUILogic.start();
         this.createMainMenu();
     }
 
     public createMainMenu() : void{
         assert(this._appEnvironment != undefined);
-        let mainMenuUILogic : MainMenuUILogic = new MainMenuUILogic(this._appEnvironment);
+        let mainMenuUILogic : MainMenuUI = new MainMenuUI(this._appEnvironment);
         mainMenuUILogic.start()
     }
 

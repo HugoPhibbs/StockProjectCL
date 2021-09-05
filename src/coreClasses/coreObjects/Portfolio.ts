@@ -1,4 +1,7 @@
 import { Holding } from "./Holding";
+import { PortfolioManager } from "./PorfolioManager";
+import { PassThrough } from 'stream';
+import { CheckInput } from "../coreLogic/CheckInput";
 
 /*
 Class to represent a collection of holdings
@@ -9,7 +12,6 @@ export class Portfolio {
     private _name : string;
 
     constructor(name : string){
-
         this._name = name;
     }
 
@@ -44,5 +46,9 @@ export class Portfolio {
 
     get holdings() : Holding[] {
         return this._holdings;
+    }
+    
+    set name(name : string) {
+        this._name = name;
     }
 }
