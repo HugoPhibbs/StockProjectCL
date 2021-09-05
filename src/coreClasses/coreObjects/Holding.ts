@@ -1,7 +1,11 @@
 import { AppEnvironment } from './AppEnvironment';
+import { restClient } from '@polygon.io/client-js';
+
+
 /*
 Class to represent a holding of a stock
 */
+
 export class Holding  {
 
     private _symbol : string;
@@ -11,6 +15,7 @@ export class Holding  {
     // Purchase date of a stock, should be a time object like java
     private _purchaseDate; 
     private _appEnvironment : AppEnvironment;
+    private _rest : any;
 
     constructor (appEvnironment: AppEnvironment, symbol : string, stockExchange : string, shares : number){
 
@@ -18,45 +23,40 @@ export class Holding  {
         this._symbol = symbol;
         this._stockExchange =stockExchange;
         this._shares = shares;
+
+        this._rest = restClient(process.env.POLYGON_API_KEY);
+
         // set the date of creation in this constructor
     }
 
     /**
-     * 
-     * @param date String for the date of the day that a user would like to see the daily open for
-     * @returns 
+     * Handles returning a dictionary that can be used to represent this holding in a tabular format
      */
-    public dailyOpen(date : string) : number {
-        // Throw an error if date is in the future, or if it is current day (dont think api can handle this with my subscription!)
-        let resp =  this.dailyOpenClose().then()
+    public toDict() :  {[value : string] : string|number}  {
+        let dict : {[value : string] : string|number} = {
+            "Symbol" : this._symbol, 
+            "Shares" : this._shares, 
+            "Daily return (%)" : this.dailyReturn(), 
+            "Total return (%)" : this.totalReturn()
+        };
+        return dict;
     }
 
-    /**
-     * Finds the object that describes the daily/open/close price of an holding
-     * Waits for a response from a client then then returns
-     * 
-     * @returns 
-     */
-    public async dailyOpenClose(){
-        let rest = this._appEnvironment.rest;
-        let response = await rest.stocks.dailyOpenClose();
-        return response;
-    }
-
-
-    public hasGained() : boolean{
-        // Returns true or false if this holding has increased in value from yesterday
-        return false;
-    }
-
-    public totalChange(percentage : boolean) : number{
-        // Returns the change of a stock,
-        // if percentage is true, then it returns the percentage change of a stock
+    private dailyReturn() : number  {
+        // Finds the daily return for this holding
+        // in percentage
         return 1;
     }
-    
-    private dailyChange() : number {
-        // Returns the change of a stock in the past day
+
+    private totalReturn() : number {
+        // Finds the total return for this holding in percentage
+        return 1
+    }
+
+    private previousClose() : number {
+        // returns the trading price at the previous close for this stock
+        // Since i am only using the free version of this API, the latest piece of data that i can get for a stock is the previous close
+        let deAsync = require('deasync')
         return 1;
     }
 
