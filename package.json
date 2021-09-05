@@ -1,0 +1,29 @@
+{
+  "name": "stockprojectcl",
+  "version": "1.0.0",
+  "description": "prototype cmd line app",
+  "main": "js_out/main/Start.js",
+  "dependencies": {
+    "@polygon.io/client-js": "^3.0.0",
+    "deasync": "^0.1.23",
+    "esserializer": "^1.1.0",
+    "fs": "^0.0.1-security",
+    "prompt-sync": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.7.10"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HugoPhibbs/StockProjectCL.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HugoPhibbs/StockProjectCL/issues"
+  },
+  "homepage": "https://github.com/HugoPhibbs/StockProjectCL#readme"
+}
