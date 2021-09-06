@@ -7,6 +7,7 @@ import { assert } from 'console';
 import { MainMenuUI } from './MainMenuUI';
 import { CheckInput } from '../../coreClasses/coreLogic/CheckInput';
 import { ViewPortfoliosUI } from './ViewPortfoliosUI';
+import { NewHoldingUI } from './NewHoldingUI';
 
 /**
  * Class to handle cmd line ui interface to edit a Portfolio\
@@ -88,6 +89,8 @@ export class EditPortfolioUI extends UILogic {
                 this.success();
                 this.interact();
                 break;
+            case "ADD_HOLDING":
+                this.addHolding();
             case "REMOVE_HOLDING":
                 //
                 break;
@@ -136,6 +139,11 @@ export class EditPortfolioUI extends UILogic {
         }
         let newName : string = UIMenu.inputStrAndCheck(message, requirements, checkIsValidFunction);
         assert(PortfolioManager.changePortfolioName(newName, this._portfolio, this._portfolioManager) == true);
+    }
+
+    private addHolding() : void {
+        let newHoldingUI : NewHoldingUI = new NewHoldingUI(this._appEnvironment, this._portfolio);
+        newHoldingUI.start();
     }
 
     /**
