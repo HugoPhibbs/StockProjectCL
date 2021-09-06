@@ -8,11 +8,15 @@ Class to represent a collection of holdings
 */
 export class Portfolio {
 
-    private _holdings : Holding[];
+    private _holdings : Holding[] = [];
     private _name : string;
 
     constructor(name : string){
         this._name = name;
+    }
+
+    public addHolding(holding : Holding) {
+        this._holdings.push(holding);
     }
 
     public totalValue() : number{
