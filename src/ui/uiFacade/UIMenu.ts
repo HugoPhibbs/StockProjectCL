@@ -115,10 +115,11 @@ export abstract class UIMenu {
      */
     public static inputOption(message: string, options : string[][]) : number {
         let requirements : string = this.optionNumRequirements(options.length);
+        let prompt : string = "Enter an option number";
         this.print(message);
         this.printOptions(options)
         let optionNumIsValidFuncHandle : (num : number) => boolean = this.optionNumIsValidFuncHandle(options);
-        return this.inputNumAndCheck(requirements, optionNumIsValidFuncHandle);
+        return this.inputNumAndCheck(prompt, requirements, optionNumIsValidFuncHandle);
     }
 
     /**
@@ -130,8 +131,8 @@ export abstract class UIMenu {
      * @param checkIsValidFunction Function to check if the inputted number is valid
      * @returns number that is entered, will be valid
      */
-    private static inputNumAndCheck(requirements : string, checkIsValidFunction : (num:number) => boolean) : number {
-        let prompt : string = this.stylePrompt("Enter an option number");
+    public static inputNumAndCheck(prompt : string, requirements : string, checkIsValidFunction : (num:number) => boolean) : number {
+        prompt = this.stylePrompt(prompt);
         let input : number = pr(prompt);
         // Need to check number is actually a number
         while (!checkIsValidFunction(input)) {
