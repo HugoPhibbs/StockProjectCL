@@ -7,24 +7,15 @@ export class CheckInput {
      * @returns boolean if inputted name is valid
      */
     public static nameIsValid(nameToCheck : string) : boolean {
-        if (nameToCheck == undefined){
+        if (nameToCheck == undefined || nameToCheck.length == 0 || nameToCheck.length > 20) {
             return false;
-        }
-        else if (nameToCheck.length == 0 || nameToCheck.length > 10){
-            return false;
-        }
-        else if (/^[a-zA-Z0-9]*$/.test(nameToCheck) == false) {
-            return false;
-        }
-        else {
-            return true;
-        }
+        } else return /^[a-zA-Z0-9]*$/.test(nameToCheck) != false;
     }   
 
     /**
      * Getter method for valid name requirements
      */
     static get nameRequirements() : string {
-        return "name must have length between 1 and 10 (inclusive) and may only contain letters and numbers";
+        return "name must have length between 1 and 20 (inclusive) and may only contain letters and numbers";
     }
 }
