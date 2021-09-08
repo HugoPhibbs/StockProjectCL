@@ -102,7 +102,7 @@ export class PortfolioManager {
      * @param portfolioManager PortfolioManager object that contains portfolio
      * @returns boolean if the new name is valid
      */
-    public static newPortfolioNameIsValid(newName : string, portfolio : Portfolio, portfolioManager : PortfolioManager) : boolean {
+    public portfolioNameChangeIsValid(newName : string, portfolio : Portfolio) : boolean {
         if (!CheckInput.nameIsValid(newName)) {
             return false;
         }
@@ -111,7 +111,7 @@ export class PortfolioManager {
                 return true;
             }
             else {
-                (!portfolioManager.includes(newName));
+                return !this.includes(newName);
             }
         }
     }
@@ -127,8 +127,8 @@ export class PortfolioManager {
      * @param portfolioManager PortfolioManager object that the portfolio belongs to
      * @returns boolean if the name change was completed
      */
-    public static changePortfolioName(newName : string, portfolio : Portfolio, portfolioManager : PortfolioManager) : boolean {
-        if (PortfolioManager.newPortfolioNameIsValid(newName, portfolio, portfolioManager)){
+    public changePortfolioName(newName : string, portfolio : Portfolio) : boolean {
+        if (this.portfolioNameChangeIsValid(newName, portfolio)){
             portfolio.name = newName;
             return true;
         }
@@ -139,7 +139,7 @@ export class PortfolioManager {
 
     static get portfolioNameRequirements() : string {
         return `A) Portfolio ${CheckInput.nameRequirements}\nand B) must not clash with any other portfolios already existing`; 
-    }
+    } 
 
     /**
      * Attempts to find a Portfolio with inputted name in this manager
@@ -155,6 +155,13 @@ export class PortfolioManager {
             }
         }
         return null;
+    }
+
+    /**
+     * Clears the list of portfolios for this deck manager
+     */
+    public removeAll() : void {
+        this._portfolios = [];
     }
 
     /**

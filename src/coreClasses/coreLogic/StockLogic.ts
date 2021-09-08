@@ -44,17 +44,33 @@ export class StockLogic {
      * @returns boolean if a ticker with inputted symbol exists
      */
     public tickerExists(symbol : string) : boolean{
-        let done : boolean = false;
-        let data : {results : object[]};
-        let query : any;
-        this._ref.tickers(query = {ticker : symbol}).then(
-            (res: { results: object[]; }) => {
-            data = res;
-            done = true;
-        });
-        this._deAsync.loopWhile(() => {return !done});
-        let result : boolean = data.results != undefined
-        return result;
+        if (!this.symbolIsUpperCase(symbol) || symbol == ""){
+            return false;
+        }
+        else {
+            let done : boolean = false;
+            let data : {results : object[]};
+            let query : any;
+            this._ref.tickers(query = {ticker : symbol}).then(
+                (res: { results: object[]; }) => {
+                data = res;
+                done = true;
+            });
+            this._deAsync.loopWhile(() => {return !done});
+            let result : boolean = data.results != undefined
+            return result;
+        }
+    }
+
+    /**
+     * Checks if a symbol is upper case. Useful to have this function here as it stops any unnncessary and costly requests
+     * to Api that will not return anything anyways
+     * 
+     * @param symbol string for symbol to be checked that if it is upper case or not
+     * @returns boolean if a symbol is upper case or not
+     */
+    private symbolIsUpperCase(symbol : string) : boolean{
+        return symbol == symbol.toUpperCase();
     }
     
     /**
