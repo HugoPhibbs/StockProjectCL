@@ -1,5 +1,3 @@
-import { AppEnvironment } from './AppEnvironment';
-
 
 /*
 Class to represent a holding of a stock
@@ -82,7 +80,7 @@ export class Holding  {
         this._symbol = symbol;
     }
 
-    set Shares(shares : number){
+    set shares(shares : number){
         if (Holding.sharesIsValid(shares)) {
             this._shares = shares;
         }
