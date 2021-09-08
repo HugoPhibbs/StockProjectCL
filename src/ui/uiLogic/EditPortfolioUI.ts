@@ -1,11 +1,11 @@
-import { AppEnvironment } from '../../coreClasses/coreObjects/AppEnvironment';
-import { UIMenu } from '../uiFacade/UIMenu';
-import { PortfolioManager } from '../../coreClasses/coreObjects/PorfolioManager';
-import { Portfolio } from '../../coreClasses/coreObjects/Portfolio';
-import { UILogic } from './UILogic';
-import { assert } from 'console';
-import { ViewPortfoliosUI } from './ViewPortfoliosUI';
-import { NewHoldingUI } from './NewHoldingUI';
+import {AppEnvironment} from '../../coreClasses/coreObjects/AppEnvironment';
+import {UIMenu} from '../uiFacade/UIMenu';
+import {PortfolioManager} from '../../coreClasses/coreObjects/PorfolioManager';
+import {Portfolio} from '../../coreClasses/coreObjects/Portfolio';
+import {UILogic} from './UILogic';
+import {assert} from 'console';
+import {ViewPortfoliosUI} from './ViewPortfoliosUI';
+import {NewHoldingUI} from './NewHoldingUI';
 
 /**
  * Class to handle cmd line ui interface to edit a Portfolio\
@@ -57,6 +57,7 @@ export class EditPortfolioUI extends UILogic {
      */
     public start() : void{
         UIMenu.welcome(`Editing a portfolio ${this._portfolio.name}`);
+        this.displayHoldings();
         this.interact();
     }
 
@@ -64,23 +65,28 @@ export class EditPortfolioUI extends UILogic {
      * Interacts with a user=
      */
     protected interact(): void {
-        let message : string = "Please select an option..."
-        let chosenOption : number = UIMenu.inputOption(message, this._options);
-        let chosenCommand : string = super.handleOptionChoice(this._options, chosenOption);
-        this.handleCommand(chosenCommand); 
+        let message: string = "Please select an option..."
+        let chosenOption: number = UIMenu.inputOption(message, this._options);
+        let chosenCommand: string = super.handleOptionChoice(this._options, chosenOption);
+        this.handleCommand(chosenCommand);
     }
 
-
-    private displayHoldings() {
-        // handles displaying holdings to a user
+    /**
+     * Displays holdings for a portfolio in a tabular format
+     *
+     * @private
+     */
+    private displayHoldings(): void {
+        let holdingsArray = this._portfolio.holdingsToTable();
+        UIMenu.printTable(holdingsArray);
     }
 
     /**
      * Handles command that corresponding to the option that a user has chosen
-     * 
+     *
      * @param command string for the chosen command as described
      */
-    private handleCommand(command : string) : void {
+    private handleCommand(command: string): void {
         switch (command) {
             case "CHANGE_NAME":
                 this.changeName();
