@@ -4,8 +4,6 @@ import { PortfolioManager } from '../../coreClasses/coreObjects/PorfolioManager'
 import { Portfolio } from '../../coreClasses/coreObjects/Portfolio';
 import { UILogic } from './UILogic';
 import { assert } from 'console';
-import { MainMenuUI } from './MainMenuUI';
-import { CheckInput } from '../../coreClasses/coreLogic/CheckInput';
 import { ViewPortfoliosUI } from './ViewPortfoliosUI';
 import { NewHoldingUI } from './NewHoldingUI';
 
@@ -116,14 +114,14 @@ export class EditPortfolioUI extends UILogic {
             this.returnToViewPortfolios();
         }
         else {
-            this.deletionAborted();
+            EditPortfolioUI.deletionAborted();
         }
     }
 
     /**
      * Handles when the deletion of a portfolio is aborted by the user
      */
-    private deletionAborted() : void {
+    private static deletionAborted() : void {
         let abortMsg : string = "Portfolio deletion aborted!";
         UIMenu.print(abortMsg);
     }
@@ -135,10 +133,10 @@ export class EditPortfolioUI extends UILogic {
         let message : string = "Please enter a new name for this portfolio";
         let requirements : string  = PortfolioManager.portfolioNameRequirements;
         let checkIsValidFunction : (portfolioName : string) => boolean = (portfolioName : string) => {
-            return PortfolioManager.newPortfolioNameIsValid(portfolioName, this._portfolio, this._portfolioManager);
+            return this._portfolioManager.portfolioNameChangeIsValid(portfolioName, this._portfolio);
         }
         let newName : string = UIMenu.inputStrAndCheck(message, requirements, checkIsValidFunction);
-        assert(PortfolioManager.changePortfolioName(newName, this._portfolio, this._portfolioManager) == true);
+        assert( this._portfolioManager.changePortfolioName(newName, this._portfolio) == true);
     }
 
     private addHolding() : void {
