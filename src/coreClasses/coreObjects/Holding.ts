@@ -1,19 +1,20 @@
-
 /*
 Class to represent a holding of a stock
 */
 
-export class Holding  {
+import {StockLogic} from "../coreLogic/StockLogic";
 
-    private _symbol : string;
-    private _shares : number;
-    private _buyPrice : number // buy price per share
+export class Holding {
+
+    private _symbol: string;
+    private _shares: number;
+    private _buyPrice: number // buy price per share
     // Purchase date of a stock, should be a time object like java
-    private _purchaseDate; 
+    private _purchaseDate;
 
-    constructor (symbol : string, shares : number, buyPrice : number){
+    constructor(symbol: string, shares: number, buyPrice: number) {
         this._symbol = symbol;
-        this._symbol = symbol;
+        this._shares = shares;
         this._buyPrice = buyPrice;
 
         // set the date of creation in this constructor
@@ -22,23 +23,33 @@ export class Holding  {
     /**
      * Handles returning a dictionary that can be used to represent this holding in a tabular format
      */
-    public toDict() :  {[value : string] : string|number}  {
-        let dict : {[value : string] : string|number} = {
-            "Symbol" : this._symbol, 
-            "Shares" : this._shares, 
-            "Daily return (%)" : this.dailyReturn(), 
-            "Total return (%)" : this.totalReturn()
-        };
-        return dict;
+    public toDict(): { Symbol: string; Shares: number; "Buy Price": number } & { "Total return (%)": string; "Total return ($)": number; "Daily return (%)": string; "Daily return ($)": number } {
+        const descriptionObj: { "Symbol": string, "Shares": number, "Buy Price": number } = {
+            "Symbol": this._symbol,
+            "Shares": this._shares,
+            "Buy Price": this._buyPrice
+        }
+        return Object.assign(descriptionObj, new StockLogic().holdingPerformanceSummary(this));
     }
 
-    private dailyReturn() : number  {
+    /**
+     * Assigns this holding to the properties in objStr
+     *
+     * @param obj
+     */
+    public assign(obj: { symbol: string, shares: number, buyPrice: number }) {
+        this._symbol = obj.symbol;
+        this._shares = obj.shares;
+        this._buyPrice = obj.buyPrice;
+    }
+
+    private dailyReturn(): number {
         // Finds the daily return for this holding
         // in percentage
         return 1;
     }
 
-    private totalReturn() : number {
+    private totalReturn(): number {
         // Finds the total return for this holding in percentage
         return 1
     }
@@ -49,7 +60,7 @@ export class Holding  {
         return 1;
     }
 
-    private setInitialValue(value : number){
+    private setInitialValue(value: number) {
         // Gets the value of this symbol on this date
         // Then sets this as the value of the stock currently
     }
@@ -64,23 +75,27 @@ export class Holding  {
         return 1;
     }
 
-    get symbol() : string{
+    get symbol(): string {
         return this._symbol;
     }
 
-    get shares() : number{
+    get shares(): number {
         return this._shares;
     }
 
-    get buyPrice() : number {
+    get initialInvestment(): number {
+        return this._shares * this._buyPrice;
+    }
+
+    get buyPrice(): number {
         return this._buyPrice;
     }
 
-    set symbol(symbol : string){
+    set symbol(symbol: string) {
         this._symbol = symbol;
     }
 
-    set shares(shares : number){
+    set shares(shares: number) {
         if (Holding.sharesIsValid(shares)) {
             this._shares = shares;
         }
