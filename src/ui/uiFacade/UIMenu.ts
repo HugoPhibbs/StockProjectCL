@@ -1,6 +1,3 @@
-import { UILogic } from "../uiLogic/UILogic";
-import { PassThrough } from 'stream';
-
 var pr = require('prompt-sync')();
 
 /**
@@ -159,23 +156,32 @@ export abstract class UIMenu {
 
     /**
      * Styles a prompt that is printed to a user. May seem unnecessary to put such a simple action into a function, but this insures
-     * minimal refactoring if you wish to change the way that prompts look. 
+     * minimal refactoring if you wish to change the way that prompts look.
      *
      * @param prompt prompt asking a user to input a number or string etc
      * @returns prompt styled as describe
      */
-    private static stylePrompt(prompt: string) : string {
-        let style : string = ": ";
+    private static stylePrompt(prompt: string): string {
+        let style: string = ": ";
         return prompt.concat(style);
+    }
+
+    /**
+     * Prints out a table for a user
+     *
+     * @param table array containing objects to be displayed in tabular format
+     */
+    public static printTable(table: any): void {
+        console.table(table);
     }
 
     /**
      * Prints a message to a user. Extrapolated to minimize refactoring if the printing out method changed
      * for example, using process.stdout.write(msg) instead of console.log(msg)
-     * 
+     *
      * @param msg string or number message to be printed
      */
-    public static print(msg : string | number) {
+    public static print(msg: string | number): void {
         console.log(msg);
     }
 }
