@@ -1,8 +1,6 @@
-import { CheckInput } from '../coreLogic/CheckInput';
-import { Portfolio } from './Portfolio';
-import { assert } from 'console';
-import { PassThrough } from 'stream';
-import { AppEnvironment } from './AppEnvironment';
+import {CheckInput} from '../coreLogic/CheckInput';
+import {Portfolio} from './Portfolio';
+import {assert} from 'console';
 
 /**
  * Class to manage a collection of Portfolios for a user
@@ -12,7 +10,7 @@ export class PortfolioManager {
     /**
      * Portfolio objects contained in this manager
      */
-    private _portfolios : Portfolio[] = [];
+    private _portfolios: Portfolio[] = [];
 
     /**
      * Attempts to create a new portfolio, and then adds it to this manager
@@ -99,7 +97,6 @@ export class PortfolioManager {
      * 
      * @param newName string for the new name of a portfolio
      * @param portfolio Portfolio object to be checked if the new name is valid
-     * @param portfolioManager PortfolioManager object that contains portfolio
      * @returns boolean if the new name is valid
      */
     public portfolioNameChangeIsValid(newName : string, portfolio : Portfolio) : boolean {
