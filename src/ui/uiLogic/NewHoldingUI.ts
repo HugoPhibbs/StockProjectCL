@@ -1,25 +1,25 @@
-import { PassThrough } from 'stream';
-import { UIMenu } from '../uiFacade/UIMenu';
-import { StockLogic } from '../../coreClasses/coreLogic/StockLogic';
-import { Holding } from '../../coreClasses/coreObjects/Holding';
-import { UILogic } from './UILogic';
-import { AppEnvironment } from '../../coreClasses/coreObjects/AppEnvironment';
-import { Portfolio } from '../../coreClasses/coreObjects/Portfolio';
-import { ViewPortfoliosUI } from './ViewPortfoliosUI';
-import { EditPortfolioUI } from './EditPortfolioUI';
+import {UIMenu} from '../uiFacade/UIMenu';
+import {StockLogic} from '../../coreClasses/coreLogic/StockLogic';
+import {Holding} from '../../coreClasses/coreObjects/Holding';
+import {UILogic} from './UILogic';
+import {AppEnvironment} from '../../coreClasses/coreObjects/AppEnvironment';
+import {Portfolio} from '../../coreClasses/coreObjects/Portfolio';
+import {EditPortfolioUI} from './EditPortfolioUI';
 
-
-export class NewHoldingUI  extends UILogic{
+/**
+ * Class to manage the UI to create a new Holding for this Application
+ */
+export class NewHoldingUI extends UILogic {
 
     /**
      * Portfolio object that this holding will be added to
      */
-    private _portfolio : Portfolio;
+    private readonly _portfolio: Portfolio;
 
     /**
      * AppEnvironment object for this application
      */
-    private _appEnvironment : AppEnvironment;
+    private readonly _appEnvironment: AppEnvironment;
 
     /**
      * Constructor
@@ -50,10 +50,10 @@ export class NewHoldingUI  extends UILogic{
      * Handles creating a holding from what is entered by a user
      */
     private createHolding() {
-        let symbol : string = this.enterSymbol();
-        let shares : number = this.enterShares();
-        let buyPrice : number = this.enterBuyPrice();
-        let holding : Holding = new Holding(symbol, shares, buyPrice);
+        let symbol: string = this.enterSymbol();
+        let shares: number = NewHoldingUI.enterShares();
+        let buyPrice: number = NewHoldingUI.enterBuyPrice();
+        let holding: Holding = new Holding(symbol, shares, buyPrice);
         this._portfolio.addHolding(holding);
     }
 
@@ -91,32 +91,29 @@ export class NewHoldingUI  extends UILogic{
         let checkIsValidFunction : (symbol : string) => boolean = (symbol : string) => {
             return new StockLogic().tickerExists(symbol);
         }
-        let symbol : string = UIMenu.inputStrAndCheck(message, requirements, checkIsValidFunction);
-        return symbol;
+        return UIMenu.inputStrAndCheck(message, requirements, checkIsValidFunction);
     }
-    
+
     /**
      * Asks user to enter the number of shares for this holding
-     * 
+     *
      * @returns number for the number of shares entered for this new holding
      */
-    private enterShares() : number {
-        let message : string = "Enter the number of shares bought for this holding";
-        let requirements : string = Holding.validSharesRequirements();
-        let shares : number = UIMenu.inputNumAndCheck(message, requirements, Holding.sharesIsValid)
-        return shares;
+    private static enterShares(): number {
+        let message: string = "Enter the number of shares bought for this holding";
+        let requirements: string = Holding.validSharesRequirements();
+        return UIMenu.inputNumAndCheck(message, requirements, Holding.sharesIsValid);
     }
-    
+
     /**
      * Handles asking a user to enter the share buy price for a holding
-     * 
+     *
      * @returns number for the buy price entered
      */
-    private enterBuyPrice() : number {
-        let message : string = "Enter the share buy price for this holding";
-        let requirements : string = Holding.validBuyPriceRequirements();
-        let buyPrice : number = UIMenu.inputNumAndCheck(message, requirements, Holding.buyPriceIsValid);
-        return buyPrice;
+    private static enterBuyPrice(): number {
+        let message: string = "Enter the share buy price for this holding";
+        let requirements: string = Holding.validBuyPriceRequirements();
+        return UIMenu.inputNumAndCheck(message, requirements, Holding.buyPriceIsValid);
     }
 
 }

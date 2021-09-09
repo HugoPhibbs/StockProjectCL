@@ -1,15 +1,31 @@
+import {User} from "./User";
+import {PortfolioManager} from './PorfolioManager';
 
-import { User } from "./User";
-import { PortfolioManager } from './PorfolioManager';
-
+/**
+ * Class that contains any objects necessary to run this application
+ * <p>
+ * Is the most important class in the hierarchy of this application
+ */
 export class AppEnvironment {
 
-    // private _rest;
-    private _user : User;
+    /**
+     * User object for this application
+     * @private
+     */
+    private _user: User;
 
-    private _portfolioManager : PortfolioManager
+    /**
+     * PortfolioManager object for this application\
+     * @private
+     */
+    private _portfolioManager: PortfolioManager
 
-    constructor(rest: any, user : User){
+    /**
+     * Constructor for an AppEnvironment object
+     *
+     * @param user User object created for this application
+     */
+    constructor(user: User) {
         // IRestClient doesn't work!
         //this._rest = rest;
         this._user = user;
@@ -17,14 +33,20 @@ export class AppEnvironment {
     }
 
     //get rest(){
-        //return this._rest;
+    //return this._rest;
     //}
 
-    get user() : User{
+    /**
+     * Getter method for the User of this application
+     */
+    get user(): User {
         return this._user;
     }
 
-    get portfolioManager() : PortfolioManager{
+    /**
+     * Getter method for the portfolioManager object for this application
+     */
+    get portfolioManager(): PortfolioManager {
         return this._portfolioManager;
     }
 

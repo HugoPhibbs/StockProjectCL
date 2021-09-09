@@ -1,12 +1,9 @@
-import { CheckInput } from '../../coreClasses/coreLogic/CheckInput';
-import { UILogic } from './UILogic';
-import { Portfolio } from '../../coreClasses/coreObjects/Portfolio';
-import { AppEnvironment } from '../../coreClasses/coreObjects/AppEnvironment';
-import { UIMenu } from '../uiFacade/UIMenu';
-import { PortfolioManager } from '../../coreClasses/coreObjects/PorfolioManager';
-import { PassThrough } from 'stream';
-import { MainMenuUI } from './MainMenuUI';
-import { ViewPortfoliosUI } from './ViewPortfoliosUI';
+import {CheckInput} from '../../coreClasses/coreLogic/CheckInput';
+import {UILogic} from './UILogic';
+import {AppEnvironment} from '../../coreClasses/coreObjects/AppEnvironment';
+import {UIMenu} from '../uiFacade/UIMenu';
+import {PortfolioManager} from '../../coreClasses/coreObjects/PorfolioManager';
+import {ViewPortfoliosUI} from './ViewPortfoliosUI';
 
 /**
  * Class to handle ui logic of creating a new portfolio
@@ -16,11 +13,11 @@ export class NewPortfolioUI extends UILogic {
     /**
      * AppEnvironment object for this instance of the application
      */
-    private _appEnvironment : AppEnvironment;
+    private readonly _appEnvironment: AppEnvironment;
     /**
      * PortfolioManager object for this instance of the application
      */
-    private _portfolioManager : PortfolioManager;
+    private _portfolioManager: PortfolioManager;
 
     /**
      * Constructor
@@ -43,8 +40,7 @@ export class NewPortfolioUI extends UILogic {
         let prompt : string = "Enter a name for a new portfolio"
         let requirements : string = `Portfolio ${CheckInput.nameRequirements}, and must not clash with any pre-existing portfolio!`;
         let canAddPortfolio = (name : string) : boolean => {return this._portfolioManager.canAddPortfolio(name)}
-        let portfolioName : string = UIMenu.inputStrAndCheck(prompt, requirements, canAddPortfolio);
-        return portfolioName;
+        return UIMenu.inputStrAndCheck(prompt, requirements, canAddPortfolio);
     }
 
     /** 
@@ -61,19 +57,18 @@ export class NewPortfolioUI extends UILogic {
      */
     public interact() {
         this.newPortfolio();
-        let wantsToStay : boolean = this.askToReturn();
+        let wantsToStay: boolean = NewPortfolioUI.askToReturn();
         this.handleReturnResponse(wantsToStay);
     }
 
     /**
      * Handles asking a user if they would like to return to the main menu or stay and create another portfolio
-     * 
+     *
      * @returns boolean for whether a user would like to create another portfolio or not. True for creating, False for leaving
      */
-    private askToReturn() : boolean {
-        let message : string = "Would you like to stay and create another Portfolio?";
-        let response : boolean = UIMenu.inputYesOrNo(message);
-        return response;
+    private static askToReturn(): boolean {
+        let message: string = "Would you like to stay and create another Portfolio?";
+        return UIMenu.inputYesOrNo(message);
     }
 
     /**
@@ -104,7 +99,7 @@ export class NewPortfolioUI extends UILogic {
     private newPortfolio() {
         let portfolioName : string = this.enterName();
         this.addPortfolio(portfolioName);
-        this.success();
+        NewPortfolioUI.success();
     }
 
     /**
@@ -120,8 +115,8 @@ export class NewPortfolioUI extends UILogic {
     /**
      * Handles the success of creating a new portfolio
      */
-    private success() {
-        let successMessage : string = "Portfolio successfully created!";
+    private static success() {
+        let successMessage: string = "Portfolio successfully created!";
         UIMenu.print(successMessage);
     }
 }

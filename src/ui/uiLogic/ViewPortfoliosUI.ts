@@ -1,36 +1,57 @@
-import { accessSync } from 'fs';
-import { AppEnvironment } from '../../coreClasses/coreObjects/AppEnvironment';
-import { Portfolio } from '../../coreClasses/coreObjects/Portfolio';
-import { assert } from 'console';
-import { MainMenuUI } from './MainMenuUI';
-import { UILogic } from './UILogic';
-import { UIMenu } from '../uiFacade/UIMenu';
-import { PortfolioManager } from '../../coreClasses/coreObjects/PorfolioManager';
-import { EditPortfolioUI } from './EditPortfolioUI';
-import { CheckInput } from '../../coreClasses/coreLogic/CheckInput';
-import { NewPortfolioUI } from './NewPortfollioUI';
-import { formatIV2HistoricTradeResultRaw } from '@polygon.io/client-js/lib/rest/stocks/v2HistoricTrades';
+import {AppEnvironment} from '../../coreClasses/coreObjects/AppEnvironment';
+import {Portfolio} from '../../coreClasses/coreObjects/Portfolio';
+import {assert} from 'console';
+import {MainMenuUI} from './MainMenuUI';
+import {UILogic} from './UILogic';
+import {UIMenu} from '../uiFacade/UIMenu';
+import {PortfolioManager} from '../../coreClasses/coreObjects/PorfolioManager';
+import {EditPortfolioUI} from './EditPortfolioUI';
+import {CheckInput} from '../../coreClasses/coreLogic/CheckInput';
+import {NewPortfolioUI} from './NewPortfollioUI';
 
-export class ViewPortfoliosUI extends UILogic{
+/**
+ * Class to display the portfolios for this Application
+ */
+export class ViewPortfoliosUI extends UILogic {
 
-    private _options : string[][] = [
-        ["Select/edit a portfolio", "EDIT_PORTFOLIO"], 
+    /**
+     * nested array that describes the options that a user can select from
+     * First entry in a nested array is the description of this particular option, The second is the command
+     * corresponding to this option
+     *
+     * @private
+     */
+    private _options: string[][] = [
+        ["Select/edit a portfolio", "EDIT_PORTFOLIO"],
         ["Add portfolio", "ADD_PORTFOLIO"],
         ["Return to main menu", "RETURN_TO_MAIN"]
     ];
 
-    private _appEnvironment : AppEnvironment;
+    /**
+     * AppEnvironment object for this application
+     * @private
+     */
+    private readonly _appEnvironment: AppEnvironment;
 
-    private _portfolios : Portfolio[];
+    /**
+     * Array containing the portfolios created by a user for this application
+     * @private
+     */
+    private _portfolios: Portfolio[];
 
-    private _portfolioManager : PortfolioManager;
+    /**
+     * PortfolioManager object for this Application
+     *
+     * @private
+     */
+    private readonly _portfolioManager: PortfolioManager;
 
     /**
      * Constructor
-     * 
+     *
      * @param appEnvironment AppEnvironment object for this application
      */
-    constructor(appEnvironment : AppEnvironment) {
+    constructor(appEnvironment: AppEnvironment) {
         super();
         this._appEnvironment = appEnvironment;
         this._portfolioManager = appEnvironment.portfolioManager;
@@ -44,12 +65,11 @@ export class ViewPortfoliosUI extends UILogic{
         UIMenu.welcome("Viewing your portfolios");
         this.displayPortfolios();
         this.interact();
-        // TODO need to add more?
     }
-    
+
     /**
      * Handles Interacting with a user
-     */ 
+     */
     protected interact(): void {
         let message : string = "Please select an option!";
         let chosenOption : number = UIMenu.inputOption(message, this._options);
@@ -65,7 +85,7 @@ export class ViewPortfoliosUI extends UILogic{
 
     /**
      * Handles option command for interacting with this menu
-     * 
+     *
      * @param command string command corresponding to the option that a user has chosen
      */
     private handleCommand(command : string) : void  {
@@ -88,20 +108,18 @@ export class ViewPortfoliosUI extends UILogic{
      * Handles asking a user which portfolio they would like to select and then edit
      */
     private choosePortfolio() : void {
-        if (this.canChooseAPortfolio()){
-            let message : string = "Please enter the name of the portfolio that you wish to edit!";
-            let requirements : string = "Portfolio name must match a portfolio that already exists!";
-            let portfolioManager : PortfolioManager = this._portfolioManager;
-            let checkIsValidFunction : (portfolioName : string) => boolean = (portfolioName : string) => {
-                return CheckInput.nameIsValid(portfolioName) && 
-                        this._portfolioManager.includes(portfolioName);
+        if (this.canChooseAPortfolio()) {
+            let message: string = "Please enter the name of the portfolio that you wish to edit!";
+            let requirements: string = "Portfolio name must match a portfolio that already exists!";
+            let checkIsValidFunction: (portfolioName: string) => boolean = (portfolioName: string) => {
+                return CheckInput.nameIsValid(portfolioName) &&
+                    this._portfolioManager.includes(portfolioName);
             }
-            let portfolioName : string = UIMenu.inputStrAndCheck(message, requirements, checkIsValidFunction);
-            let chosenPortfolio : Portfolio = this._portfolioManager.findPortfolio(portfolioName);
+            let portfolioName: string = UIMenu.inputStrAndCheck(message, requirements, checkIsValidFunction);
+            let chosenPortfolio: Portfolio = this._portfolioManager.findPortfolio(portfolioName);
             this.editPortfolio(chosenPortfolio);
-        }
-        else {              
-            let msg : string = "No portfolios to select!"
+        } else {
+            let msg: string = "No portfolios to select!"
             UIMenu.print(msg);
             this.interact();
         }
@@ -117,7 +135,7 @@ export class ViewPortfoliosUI extends UILogic{
 
     /**
      * Handles when a user wants to edit a chosen Portfolio that was displayed
-     * 
+     *
      * @param portfolio Portfolio object to be edited
      */
     private editPortfolio(portfolio : Portfolio) : void {
@@ -127,8 +145,8 @@ export class ViewPortfoliosUI extends UILogic{
     }
 
     /**
-     * Handles when a user would like to create a new portfolio. 
-     * 
+     * Handles when a user would like to create a new portfolio.
+     *
      * Creates a new interface
      */
     private addPortfolio() : void {

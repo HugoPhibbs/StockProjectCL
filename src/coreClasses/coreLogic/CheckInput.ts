@@ -1,8 +1,11 @@
+/**
+ * Static class containing method to check general input from a user
+ */
 export class CheckInput {
 
     /**
      * Checks if an inputted name is valid
-     * 
+     *
      * @param nameToCheck string for the name to be checked
      * @returns boolean if inputted name is valid
      */
@@ -10,7 +13,7 @@ export class CheckInput {
         if (nameToCheck == undefined || nameToCheck.length == 0 || nameToCheck.length > 20) {
             return false;
         } else return /^[a-zA-Z0-9]*$/.test(nameToCheck) != false;
-    }   
+    }
 
     /**
      * Getter method for valid name requirements

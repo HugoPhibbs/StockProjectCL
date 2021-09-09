@@ -6,12 +6,12 @@ import {Holding} from "../coreObjects/Holding";
 export class StockLogic {
 
     /**
-     * Rest client belonging to the polygon.io API
+     * Rest client belonging to the Polygon.io API
      */
     private _rest;
 
     /**
-     * Reference client belonging to the polygon.io API
+     * Reference client belonging to the Polygon.io API
      */
     private _ref;
 
@@ -79,15 +79,15 @@ export class StockLogic {
 
     /**
      * Finds an object describing the previous day's trading for a stock
+     * <p>
+     * WARNING: Does not check if a symbol exists before querying!. Please make sure that a symbol exists for a ticker in
+     * Polygon.io before calling this function!
      *
      * @param _symbol string for the symbol to be looked up
      * @returns {close: number, open : number} object describing previous day's stock movement
      */
     public previousDayData(_symbol: string): { close: number, open: number } {
         // Finds the last closing price for a symbol
-        if (!this.tickerExists(_symbol)) {
-            return null // yes this gives x2 performance times. Cant find way to to it in one request
-        }
         let done: boolean = false;
         let data: any;
         let symbol: string;
@@ -135,7 +135,7 @@ export class StockLogic {
      * @returns string for the daily percentage return of a Holding
      */
     public dailyPercReturn(previousDayData: { close: number, open: number }, holding: Holding): string {
-        return this.calcPercentage((previousDayData.close - previousDayData.open), previousDayData.open);
+        return StockLogic.calcPercentage((previousDayData.close - previousDayData.open), previousDayData.open);
     }
 
     /**
@@ -156,7 +156,7 @@ export class StockLogic {
      */
     public totalPercReturn(previousDayData: { close: number, open: number }, holding: Holding): string {
         let previousClose = previousDayData.close;
-        return this.calcPercentage((previousClose - holding.buyPrice), holding.buyPrice);
+        return StockLogic.calcPercentage((previousClose - holding.buyPrice), holding.buyPrice);
     }
 
     /**
@@ -166,7 +166,7 @@ export class StockLogic {
      * @param denominator number expressing the bottom of the fraction
      * @returns string expressing the percentage proportion between numerator and the denominator.
      */
-    private calcPercentage(numerator: number, denominator: number): string {
+    private static calcPercentage(numerator: number, denominator: number): string {
         return `${(numerator / denominator) * 100}%`
     }
 

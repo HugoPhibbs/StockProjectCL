@@ -79,7 +79,7 @@ export class LoadApp {
      */
     public createSave(userName: string): boolean {
         let user = new User(userName);
-        this._appEnvironment = new AppEnvironment(this, user);
+        this._appEnvironment = new AppEnvironment(user);
         let serializedJSON = ess.serialize(this._appEnvironment, User);
         let sessionDirectory: string = this.sessionDirectory(userName)
         fs.writeFileSync(sessionDirectory, serializedJSON, 'utf-8')

@@ -1,23 +1,41 @@
-/*
-Class to represent a holding of a stock
-*/
-
 import {StockLogic} from "../coreLogic/StockLogic";
 
+/**
+ * Class to represent a Holding for this application
+ * <p>
+ * Represents an investment made by a User into a particular stock
+ */
 export class Holding {
 
+    /**
+     * String for the symbol of this holding
+     * @private
+     */
     private _symbol: string;
-    private _shares: number;
-    private _buyPrice: number // buy price per share
-    // Purchase date of a stock, should be a time object like java
-    private _purchaseDate;
 
+    /**
+     * Number for the number of shares contained in this holding
+     * @private
+     */
+    private _shares: number;
+
+    /**
+     * Number for the initial price per share for this Holding
+     * @private
+     */
+    private _buyPrice: number // buy price per share
+
+    /**
+     * Constructor for a new Holding object
+     *
+     * @param symbol string for the symbol of a Holding
+     * @param shares number for the number of shares that this Holding has
+     * @param buyPrice number for the share price that this Holding was bought at initially
+     */
     constructor(symbol: string, shares: number, buyPrice: number) {
         this._symbol = symbol;
-        this._shares = shares;
         this._buyPrice = buyPrice;
-
-        // set the date of creation in this constructor
+        this.shares = shares; // Uses setter method
     }
 
     /**
@@ -33,68 +51,37 @@ export class Holding {
     }
 
     /**
-     * Assigns this holding to the properties in objStr
+     * Getter method for the symbol of this Holding
      *
-     * @param obj
+     * @returns string as described
      */
-    public assign(obj: { symbol: string, shares: number, buyPrice: number }) {
-        this._symbol = obj.symbol;
-        this._shares = obj.shares;
-        this._buyPrice = obj.buyPrice;
-    }
-
-    private dailyReturn(): number {
-        // Finds the daily return for this holding
-        // in percentage
-        return 1;
-    }
-
-    private totalReturn(): number {
-        // Finds the total return for this holding in percentage
-        return 1
-    }
-
-    private previousClose() : number {
-        // returns the trading price at the previous close for this stock
-        // Since i am only using the free version of this API, the latest piece of data that i can get for a stock is the previous close
-        return 1;
-    }
-
-    private setInitialValue(value: number) {
-        // Gets the value of this symbol on this date
-        // Then sets this as the value of the stock currently
-    }
-
-    public initialValue(): number{
-        // Gets the initial value of this holding
-        return 1;
-    }
-
-    public currentValue() : number {
-        // Get the value of this holding
-        return 1;
-    }
-
     get symbol(): string {
         return this._symbol;
     }
 
+    /**
+     * Getter method for the number of shares contained by this Holding
+     *
+     * @returns number as described
+     */
     get shares(): number {
         return this._shares;
     }
 
-    get initialInvestment(): number {
-        return this._shares * this._buyPrice;
-    }
-
+    /**
+     * Getter method for the buy price per share for this Holding
+     *
+     * @returns number as described
+     */
     get buyPrice(): number {
         return this._buyPrice;
     }
 
-    set symbol(symbol: string) {
-        this._symbol = symbol;
-    }
-
+    /**
+     * Setter method for the shares of this Holding object
+     *
+     * @param shares number to be set as the number of shares for this Holding
+     */
     set shares(shares: number) {
         if (Holding.sharesIsValid(shares)) {
             this._shares = shares;
@@ -103,7 +90,7 @@ export class Holding {
 
     /**
      * Finds out if an inputted shares object is a valid number of shares or not
-     * 
+     *
      * @param shares number that is to be checked if it is a valid quantity of shares
      * @returns boolean as described
      */
@@ -111,10 +98,9 @@ export class Holding {
         return (shares > 0)
     }
 
-
     /**
      * Returns the requirements for a valid quantity of shares expressed as a string
-     * 
+     *
      * @returns string as described
      */
     public static validSharesRequirements() : string {
@@ -123,15 +109,20 @@ export class Holding {
 
     /**
      * Checks if an inputted buyPrice is valid
-     * 
+     *
      * @param buyPrice number to be checked if it is a valid buyPrice
      * @returns boolean as described
      */
-    public static buyPriceIsValid(buyPrice : number) : boolean {
+    public static buyPriceIsValid(buyPrice: number): boolean {
         return (buyPrice >= 0);
     }
 
-    public static validBuyPriceRequirements() : string {
+    /**
+     * Returns the requirements for the valid buy price of this Holding
+     *
+     * @string as described
+     */
+    public static validBuyPriceRequirements(): string {
         return "Buy price must be a non negative number";
     }
 }
