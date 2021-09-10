@@ -1,9 +1,11 @@
 import {Holding} from "./Holding";
+import {StockLogic} from "../coreLogic/StockLogic";
+import {Measurable} from "./Measurable";
 
 /*
 Class to represent a collection of holdings
 */
-export class Portfolio {
+export class Portfolio extends Measurable {
 
     /**
      * Array containing the holdings for this portfolio
@@ -23,6 +25,7 @@ export class Portfolio {
      * @param name string for the name of a a new portfolio
      */
     constructor(name: string) {
+        super();
         this._name = name;
     }
 
@@ -35,8 +38,9 @@ export class Portfolio {
         this._holdings.push(holding);
     }
 
-    public todict() {
-        // Returns an dictionairy representation of this portfolio
+    public summary(stockLogic: StockLogic) {
+        const descriptionObj: { "Name": string } = {"Name": this._name};
+        return Object.assign(descriptionObj, this.performanceSummary(stockLogic));
     }
 
     /**
@@ -44,13 +48,30 @@ export class Portfolio {
      *
      * @returns object as described
      */
-    public holdingsToTable(): [{ Symbol: string; Shares: number } & { "Total return (%)": number; "Total return ($)": string; "Daily return (%)": string; "Daily return ($)": number }] {
+    public holdingsToTable(stockLogic: StockLogic): [{ Symbol: string; Shares: number } & { "Total return (%)": number; "Total return ($)": string; "Daily return (%)": string; "Daily return ($)": number }] {
         let table = [];
         for (let i = 0; i < this._holdings.length; i++) {
-            table.push(this._holdings[i].toDict())
+            table.push(this._holdings[i].summary(stockLogic));
         }
         // @ts-ignore
         return table;
+    }
+
+    public dollarValues(stockLogic: StockLogic) {
+        let dollarValues: { initialValue: number, prevOpenValue: number, prevCloseValue: number } = {
+            initialValue: 0,
+            prevOpenValue: 0,
+            prevCloseValue: 0
+        };
+        for (let i = 0; i < this._holdings.length; i++) {
+            let currHolding: Holding = this._holdings[i];
+            let holdingValues: { initialValue: number, prevOpenValue: number, prevCloseValue: number } = currHolding.dollarValues(stockLogic);
+            dollarValues.initialValue += holdingValues.initialValue;
+            dollarValues.prevOpenValue += holdingValues.prevOpenValue;
+            dollarValues.prevCloseValue += holdingValues.prevCloseValue;
+        }
+        return dollarValues;
+
     }
 
     /**
