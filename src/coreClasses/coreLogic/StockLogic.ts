@@ -1,5 +1,3 @@
-import {Holding} from "../coreObjects/Holding";
-
 /**
  * Class to do any logic to do with the polygon.io api\
  */
@@ -33,23 +31,6 @@ export class StockLogic {
         this._rest = require("@polygon.io/client-js").restClient("s1pd4MlVenZGJWPP8p1mN3BUpO7TVYZq");
         this._ref = require("@polygon.io/client-js").referenceClient("s1pd4MlVenZGJWPP8p1mN3BUpO7TVYZq");
         this._deAsync = require("deasync");
-    }
-
-    /**
-     * Returns an object giving a performance summary of a stock. Provides the total and daily return expressed both in dollar and percentage amounts
-     *
-     * @param holding Holding object for a summary to be calculated for
-     * @returns  { "Total return (%)": number; "Total return ($)": string; "Daily return (%)": string; "Daily return ($)": number } object detailing the performance of a Holding
-     */
-    public holdingPerformanceSummary(holding: Holding): { "Total return (%)": string; "Total return ($)": number; "Daily return (%)": string; "Daily return ($)": number } {
-        // Returns an object describing the stock performance of a stock
-        const previousDayData: { close: number, open: number } = this.previousDayData(holding.symbol);
-        return {
-            "Total return (%)": this.totalPercReturn(previousDayData, holding),
-            "Total return ($)": this.totalDollarReturn(previousDayData, holding),
-            "Daily return ($)": this.dailyDollarReturn(previousDayData, holding),
-            "Daily return (%)": this.dailyPercReturn(previousDayData, holding)
-        };
     }
 
     /**
@@ -114,49 +95,29 @@ export class StockLogic {
         return symbol == symbol.toUpperCase();
     }
 
+    public static calcReturn(initialValue: number, currentValue: number) {
+        let dollarReturn: number = this.calcDollarReturn(initialValue, currentValue);
+        let percReturn: string = this.calcPercReturn(initialValue, dollarReturn);
+        return {
+            dollarReturn: dollarReturn,
+            percReturn: percReturn
+        }
+    }
+
     /**
-     * Finds the actual daily return for a Holding object. From the last day of trading, as I don't have
-     * full version of polygon the best I can do is the previous day data
+     * Finds and returns the dollar return for a Holding or Portfolio
      *
-     * @param previousDayData object with values detailing the previous day's performance for a ticker
-     * @param holding Holding object to be calculated the actual daily return for
-     * @returns number signed difference in price between the closing and opening stock price
+     * @param initialValue number
+     * @param currentValue number
+     * @returns number for the dollar return of a Portfolio or Holding
+     * @private
      */
-    public dailyDollarReturn(previousDayData: { close: number, open: number }, holding: Holding): number {
-        return holding.shares * (previousDayData.close - previousDayData.open);
+    private static calcDollarReturn(initialValue: number, currentValue: number) {
+        return currentValue - initialValue;
     }
 
-    /**
-     * Finds the daily return of a Holding object expressed as a percentage between the opening price of the stock
-     * and its closing price
-     *
-     * @param previousDayData object with values detailing the previous day's performance for a ticker
-     * @param holding Holding object for the daily percentage return to be calculated for]
-     * @returns string for the daily percentage return of a Holding
-     */
-    public dailyPercReturn(previousDayData: { close: number, open: number }, holding: Holding): string {
-        return StockLogic.calcPercentage((previousDayData.close - previousDayData.open), previousDayData.open);
-    }
-
-    /**
-     * Finds the total return of a holding expresses in a dollar amount
-     * @param previousDayData object with values detailing the previous day's performance for a ticker
-     * @param holding Holding object to find the actual return for
-     * @returns number expressing the v
-     */
-    public totalDollarReturn(previousDayData: { close: number, open: number }, holding: Holding): number {
-        return holding.shares * (previousDayData.close - holding.buyPrice);
-    }
-
-    /**
-     * Calculates the percentage gain of a Holding
-     * @param previousDayData object with values detailing the previous day's performance for a ticker
-     * @param holding Holding object for the percentage gain to be calculated for
-     * @returns string expressing the percentage gain of a Holding
-     */
-    public totalPercReturn(previousDayData: { close: number, open: number }, holding: Holding): string {
-        let previousClose = previousDayData.close;
-        return StockLogic.calcPercentage((previousClose - holding.buyPrice), holding.buyPrice);
+    private static calcPercReturn(initialValue: number, dollarReturn: number): string {
+        return this.calcPercentage(dollarReturn, initialValue);
     }
 
     /**
@@ -166,7 +127,7 @@ export class StockLogic {
      * @param denominator number expressing the bottom of the fraction
      * @returns string expressing the percentage proportion between numerator and the denominator.
      */
-    private static calcPercentage(numerator: number, denominator: number): string {
+    public static calcPercentage(numerator: number, denominator: number): string {
         return `${(numerator / denominator) * 100}%`
     }
 
