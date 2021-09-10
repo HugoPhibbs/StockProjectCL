@@ -1,17 +1,18 @@
 import {StockLogic} from "../coreLogic/StockLogic";
+import {Measurable} from "./Measurable";
 
 /**
  * Class to represent a Holding for this application
  * <p>
  * Represents an investment made by a User into a particular stock
  */
-export class Holding {
+export class Holding extends Measurable {
 
     /**
      * String for the symbol of this holding
      * @private
      */
-    private _symbol: string;
+    private readonly _symbol: string;
 
     /**
      * Number for the number of shares contained in this holding
@@ -23,7 +24,7 @@ export class Holding {
      * Number for the initial price per share for this Holding
      * @private
      */
-    private _buyPrice: number // buy price per share
+    private readonly _buyPrice: number // buy price per share
 
     /**
      * Constructor for a new Holding object
@@ -33,6 +34,7 @@ export class Holding {
      * @param buyPrice number for the share price that this Holding was bought at initially
      */
     constructor(symbol: string, shares: number, buyPrice: number) {
+        super();
         this._symbol = symbol;
         this._buyPrice = buyPrice;
         this.shares = shares; // Uses setter method
@@ -41,13 +43,53 @@ export class Holding {
     /**
      * Handles returning a dictionary that can be used to represent this holding in a tabular format
      */
-    public toDict(): { Symbol: string; Shares: number; "Buy Price": number } & { "Total return (%)": string; "Total return ($)": number; "Daily return (%)": string; "Daily return ($)": number } {
+    public summary(stockLogic: StockLogic): { Symbol: string; Shares: number; "Buy Price": number } & { "Total return (%)": string; "Total return ($)": number; "Daily return (%)": string; "Daily return ($)": number } {
         const descriptionObj: { "Symbol": string, "Shares": number, "Buy Price": number } = {
             "Symbol": this._symbol,
             "Shares": this._shares,
             "Buy Price": this._buyPrice
         }
-        return Object.assign(descriptionObj, new StockLogic().holdingPerformanceSummary(this));
+        return Object.assign(descriptionObj, this.performanceSummary(stockLogic));
+    }
+
+    /**
+     * Returns an object describing this Holding in terms of dollar values.
+     * Used by Portfolio to calculate performance figures for itself.
+     * <p>
+     * Finds the initial value of this holding and it's values for opening and closing from the previous
+     * day of trading
+     *
+     * @param stockLogic StockLogic object for this interaction
+     * @returns { prevCloseValue: number; initialValue: number; prevOpenValue: number } object as described
+     */
+    public dollarValues(stockLogic: StockLogic): { prevCloseValue: number; initialValue: number; prevOpenValue: number } {
+        let previousDayData = stockLogic.previousDayData(this._symbol);
+        return {
+            initialValue: this.initialValue(),
+            prevOpenValue: this.dollarValue(previousDayData.open),
+            prevCloseValue: this.dollarValue(previousDayData.close)
+        };
+    }
+
+    /**
+     * Returns the initial value of this Holding, based on the buy price per share
+     *
+     * @returns number as described
+     * @private
+     */
+    private initialValue(): number {
+        return this.dollarValue(this.buyPrice)
+    }
+
+    /**
+     * Returns the value of this Holding based on a inputted stock price per share for this Holding
+     *
+     * @param sharePrice number for the share price for the stock of this Holding
+     * @returns number for the current value of a holding as described
+     * @private
+     */
+    private dollarValue(sharePrice: number): number {
+        return this.shares * sharePrice;
     }
 
     /**
