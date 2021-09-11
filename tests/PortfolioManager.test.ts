@@ -125,7 +125,7 @@ const removePortfolioTest = () => {
 
     test("Test with a portfolio that has not been added", () => {
         const result: boolean = testPortfolioManager.removePortfolio("testPortfolioSix");
-        expect(!testPortfolioManager.includes("testPortfolioSix")).toBeFalsy();
+        expect(testPortfolioManager.includes("testPortfolioSix")).toBeFalsy();
         expect(result).toBeFalsy();
     })
 }
@@ -137,6 +137,7 @@ const runTests = () => {
     changePortfolioNameTest();
     portfolioNameChangeIsValidTest();
     newPortfolioTest();
+    removePortfolioTest();
 }
 
 runTests();
