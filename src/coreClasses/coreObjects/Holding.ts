@@ -1,5 +1,5 @@
 import {StockLogic} from "../coreLogic/StockLogic";
-import {Measurable} from "./Measurable";
+import Measurable, {dollarValuesObj, performaceObj} from "./Measurable";
 
 /**
  * Class to represent a Holding for this application
@@ -43,13 +43,13 @@ export class Holding extends Measurable {
     /**
      * Handles returning a dictionary that can be used to represent this holding in a tabular format
      */
-    public summary(stockLogic: StockLogic): { Symbol: string; Shares: number; "Buy Price": number } & { "Total return (%)": string; "Total return ($)": number; "Daily return (%)": string; "Daily return ($)": number } {
+    public summary(stockLogic: StockLogic): { Symbol: string; Shares: number; "Buy Price": number } & performaceObj {
         const descriptionObj: { "Symbol": string, "Shares": number, "Buy Price": number } = {
             "Symbol": this._symbol,
             "Shares": this._shares,
             "Buy Price": this._buyPrice
         }
-        return Object.assign(descriptionObj, this.performanceSummary(stockLogic));
+        return Object.assign(descriptionObj, super.performanceSummary(stockLogic));
     }
 
     /**
@@ -62,7 +62,7 @@ export class Holding extends Measurable {
      * @param stockLogic StockLogic object for this interaction
      * @returns { prevCloseValue: number; initialValue: number; prevOpenValue: number } object as described
      */
-    public dollarValues(stockLogic: StockLogic): { prevCloseValue: number; initialValue: number; prevOpenValue: number } {
+    public dollarValues(stockLogic: StockLogic): dollarValuesObj {
         let previousDayData = stockLogic.previousDayData(this._symbol);
         return {
             initialValue: this.initialValue(),
@@ -132,6 +132,8 @@ export class Holding extends Measurable {
 
     /**
      * Finds out if an inputted shares object is a valid number of shares or not
+     * <p>
+     * Put into it's own little function to minimise any needed refactoring
      *
      * @param shares number that is to be checked if it is a valid quantity of shares
      * @returns boolean as described
