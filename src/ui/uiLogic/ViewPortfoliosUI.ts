@@ -71,16 +71,22 @@ export class ViewPortfoliosUI extends UILogic {
      * Handles Interacting with a user
      */
     protected interact(): void {
-        let message : string = "Please select an option!";
-        let chosenOption : number = UIMenu.inputOption(message, this._options);
-        let chosenCommand : string = super.handleOptionChoice(this._options, chosenOption);
+        let message: string = "Please select an option!";
+        let chosenOption: number = UIMenu.inputOption(message, this._options);
+        let chosenCommand: string = super.handleOptionChoice(this._options, chosenOption);
         this.handleCommand(chosenCommand);
     }
 
-    private displayPortfolios() : void {
-        // Display the portfolios belonging to a user in tabular format
-        // TODO implement!
-        UIMenu.print("PLACEHOLDER! this is where the portfolios should be!")
+    /**
+     * Handles displaying portfolios to a user
+     * @private
+     */
+    private displayPortfolios(): void {
+        if (this._portfolioManager.isEmpty()) {
+            UIMenu.print("No portfolios to display")
+        } else {
+            UIMenu.printTable(this._portfolioManager.portfoliosToTable());
+        }
     }
 
     /**
