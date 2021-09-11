@@ -6,6 +6,7 @@ import {UILogic} from './UILogic';
 import {assert} from 'console';
 import {ViewPortfoliosUI} from './ViewPortfoliosUI';
 import {NewHoldingUI} from './NewHoldingUI';
+import {StockLogic} from "../../coreClasses/coreLogic/StockLogic";
 
 /**
  * Class to handle cmd line ui interface to edit a Portfolio\
@@ -77,8 +78,12 @@ export class EditPortfolioUI extends UILogic {
      * @private
      */
     private displayHoldings(): void {
-        let holdingsArray = this._portfolio.holdingsToTable();
-        UIMenu.printTable(holdingsArray);
+        if (this._portfolio.isEmpty()) {
+            UIMenu.print("No holdings to display!")
+        } else {
+            let holdingsArray = this._portfolio.holdingsToTable(new StockLogic());
+            UIMenu.printTable(holdingsArray);
+        }
     }
 
     /**
@@ -96,7 +101,7 @@ export class EditPortfolioUI extends UILogic {
             case "ADD_HOLDING":
                 this.addHolding();
             case "REMOVE_HOLDING":
-                //
+                // TODO implement!
                 break;
             case "DELETE_PORTFOLIO":
                 this.confirmDeletion();
