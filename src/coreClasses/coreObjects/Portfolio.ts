@@ -1,6 +1,6 @@
 import {Holding} from "./Holding";
 import {StockLogic} from "../coreLogic/StockLogic";
-import {Measurable} from "./Measurable";
+import Measurable, {dollarValuesObj, performaceObj} from "./Measurable";
 
 /*
 Class to represent a collection of holdings
@@ -29,40 +29,32 @@ export class Portfolio extends Measurable {
         this._name = name;
     }
 
-    /**
-     * Handles adding a Holding object to this portfolio
-     *
-     * @param holding Holding object to be added
-     */
-    public addHolding(holding: Holding) {
-        this._holdings.push(holding);
-    }
+    /************ METHODS FOR CREATING A TABLE ENTRY OUT OF THIS PORTFOLIO ****************/
 
-    public summary(stockLogic: StockLogic) {
+    /**
+     * Returns an object describing a summary for this Portfolio. A high level overview of any details of this portfolio
+     * eg the name, and also performance values.
+     *
+     * @param stockLogic StockLogic object for this application to interact with the Polygon.io API
+     * @returns object { "Name": string, "Total return (%)": string; "Total return ($)": number; "Daily return (%)": string; "Daily return ($)": number } {
+     * giving a summary of this portfolio
+     */
+    public summary(stockLogic: StockLogic): { "Name": string } & performaceObj {
         const descriptionObj: { "Name": string } = {"Name": this._name};
-        return Object.assign(descriptionObj, this.performanceSummary(stockLogic));
+        return Object.assign(descriptionObj, super.performanceSummary(stockLogic));
     }
 
     /**
-     * Returns an array of objects describing holdings for this portfolio
+     * Returns an object describing the dollar values of this portfolio.
+     * <p>
+     * Returned object describes the initial value of this portfolio, along with the value on opening and closing from
+     * the last trading day
      *
-     * @returns object as described
+     * @param stockLogic StockLogic object created to query Polygon.io API
+     * @returns {initialValue : number, prevOpenValue : number, prevCloseValue : number} object as described
      */
-    public holdingsToTable(stockLogic: StockLogic): [{ Symbol: string; Shares: number } & { "Total return (%)": number; "Total return ($)": string; "Daily return (%)": string; "Daily return ($)": number }] {
-        let table = [];
-        for (let i = 0; i < this._holdings.length; i++) {
-            table.push(this._holdings[i].summary(stockLogic));
-        }
-        // @ts-ignore
-        return table;
-    }
-
-    public dollarValues(stockLogic: StockLogic) {
-        let dollarValues: { initialValue: number, prevOpenValue: number, prevCloseValue: number } = {
-            initialValue: 0,
-            prevOpenValue: 0,
-            prevCloseValue: 0
-        };
+    protected dollarValues(stockLogic: StockLogic): dollarValuesObj {
+        let dollarValues: dollarValuesObj = {initialValue: 0, prevOpenValue: 0, prevCloseValue: 0};
         for (let i = 0; i < this._holdings.length; i++) {
             let currHolding: Holding = this._holdings[i];
             let holdingValues: { initialValue: number, prevOpenValue: number, prevCloseValue: number } = currHolding.dollarValues(stockLogic);
@@ -73,6 +65,33 @@ export class Portfolio extends Measurable {
         return dollarValues;
 
     }
+
+    /****************************** MANAGING HOLDINGS ****************************/
+    /**
+     * Returns an array of objects describing holdings for this portfolio
+     *
+     * @param stockLogic StockLogic object for this application, interacts with Polygon.io API
+     * @returns object as described
+     */
+    public holdingsToTable(stockLogic: StockLogic): [{ Symbol: string; Shares: number } & performaceObj] {
+        let table = [];
+        for (let i = 0; i < this._holdings.length; i++) {
+            table.push(this._holdings[i].summary(stockLogic));
+        }
+        // @ts-ignore
+        return table;
+    }
+
+    /**
+     * Handles adding a Holding object to this portfolio
+     *
+     * @param holding Holding object to be added
+     */
+    public addHolding(holding: Holding) {
+        this._holdings.push(holding);
+    }
+
+    /**************************** OTHER GENERAL METHODS **************************/
 
     /**
      * Finds out if the another object is equal to this portfolio object
@@ -85,10 +104,18 @@ export class Portfolio extends Measurable {
     public equals(obj: any): boolean {
         if (obj == null || typeof obj != typeof this) {
             return false;
-        } else {
-            obj = (obj as Portfolio);
-            return (obj.name == this.name);
         }
+        obj = (obj as Portfolio);
+        return (obj.name == this.name);
+    }
+
+    /**
+     * Finds if this Portfolio is empty or not, that is, it does not contain any holdings!
+     *
+     * @returns boolean if this Portfolio is empty or not
+     */
+    public isEmpty(): boolean {
+        return (this._holdings.length == 0);
     }
 
     /**
