@@ -9,8 +9,9 @@ const setSharesTest = () => {
     })
 
     test("Testing with a share amount that is not valid", () => {
+        let sharesBefore: number = testHolding.shares
         testHolding.shares = -1;
-        expect(testHolding.shares).toBe(9);
+        expect(testHolding.shares).toBe(sharesBefore);
     })
 }
 
