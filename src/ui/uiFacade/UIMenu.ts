@@ -120,10 +120,11 @@ export abstract class UIMenu {
     }
 
     /**
-     * Asks a user to input a number based on a prompt. If the number entered isn't valid, then user is notified, and is asked to enter a number until it is valid. 
+     * Asks a user to input a number based on a prompt. If the number entered isn't valid, then user is notified, and is asked to enter a number until it is valid.
      * <p>
      * Keeps requirements separate so a user can enter numbers that dont necessarily reflect a chosen option, for example, entering a share price of a stock
-     * 
+     *
+     * @param prompt string to be displayed to a user to ask them to enter a number
      * @param requirements string for a message to tell a user the requirements of an inputted number
      * @param checkIsValidFunction Function to check if the inputted number is valid
      * @returns number that is entered, will be valid
@@ -131,19 +132,17 @@ export abstract class UIMenu {
     public static inputNumAndCheck(prompt : string, requirements : string, checkIsValidFunction : (num:number) => boolean) : number {
         prompt = this.stylePrompt(prompt);
         let input : number = pr(prompt);
-        // Need to check number is actually a number
         while (!checkIsValidFunction(input)) {
             this.print(requirements);
             input = pr(prompt);
         }
-        return input;
+        return Number(input);
     }
     
 
     /**
      * Prints options that a user can select that are based on their numbering
-     * 
-     * @param numOptions number of options that a user can select. Must be an integer, and 
+     *
      * @param options string[][] nested array for the options that a user can select. 
      */
     private static printOptions(options : string[][]) {
