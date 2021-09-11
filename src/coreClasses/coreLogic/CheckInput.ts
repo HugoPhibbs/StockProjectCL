@@ -10,9 +10,11 @@ export class CheckInput {
      * @returns boolean if inputted name is valid
      */
     public static nameIsValid(nameToCheck : string) : boolean {
-        if (nameToCheck == undefined || nameToCheck.length == 0 || nameToCheck.length > 20) {
-            return false;
-        } else return /^[a-zA-Z0-9]*$/.test(nameToCheck) != false;
+        return (
+            (nameToCheck != undefined) &&
+            (nameToCheck.length > 0 && nameToCheck.length <= 20) &&
+            (/^[a-zA-Z0-9]*$/.test(nameToCheck))
+        )
     }
 
     /**
