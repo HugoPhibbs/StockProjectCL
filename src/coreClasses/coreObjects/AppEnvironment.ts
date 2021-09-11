@@ -12,13 +12,13 @@ export class AppEnvironment {
      * User object for this application
      * @private
      */
-    private _user: User;
+    private readonly _user: User;
 
     /**
      * PortfolioManager object for this application\
      * @private
      */
-    private _portfolioManager: PortfolioManager
+    private readonly _portfolioManager: PortfolioManager
 
     /**
      * Constructor for an AppEnvironment object
@@ -26,15 +26,9 @@ export class AppEnvironment {
      * @param user User object created for this application
      */
     constructor(user: User) {
-        // IRestClient doesn't work!
-        //this._rest = rest;
         this._user = user;
         this._portfolioManager = new PortfolioManager();
     }
-
-    //get rest(){
-    //return this._rest;
-    //}
 
     /**
      * Getter method for the User of this application
