@@ -1,6 +1,8 @@
 import {CheckInput} from '../coreLogic/CheckInput';
 import {Portfolio} from './Portfolio';
 import {assert} from 'console';
+import {StockLogic} from "../coreLogic/StockLogic";
+import {performaceObj} from "./Measurable";
 
 /**
  * Class to manage a collection of Portfolios for a user
@@ -47,7 +49,7 @@ export class PortfolioManager {
      * @returns boolean as described
      */
     public includesPortfolio(portfolio : Portfolio) : boolean {
-        return this.includes(portfolio.name);
+        return (this.includes(portfolio.name));
     }
 
     /**
@@ -57,7 +59,7 @@ export class PortfolioManager {
      * @returns boolean if a portfolio with name portfolioName exists in this manager
      */
     public includes(portfolioName : string) : boolean {
-        return this.findPortfolio(portfolioName) != null;
+        return (this.findPortfolio(portfolioName) != null);
     }
 
     /**
@@ -94,60 +96,72 @@ export class PortfolioManager {
 
     /**
      * Finds if an inputted new portfolio name is valid
-     * 
+     *
      * @param newName string for the new name of a portfolio
      * @param portfolio Portfolio object to be checked if the new name is valid
      * @returns boolean if the new name is valid
      */
-    public portfolioNameChangeIsValid(newName : string, portfolio : Portfolio) : boolean {
+    public portfolioNameChangeIsValid(newName: string, portfolio: Portfolio): boolean {
         if (!CheckInput.nameIsValid(newName)) {
             return false;
+        } else if (portfolio.name == newName) {
+            return true;
         }
-        else {
-            if (portfolio.name == newName){
-                return true;
-            }
-            else {
-                return !this.includes(newName);
-            }
-        }
+        return !this.includes(newName);
     }
 
+    /**
+     * Returns a tabular representation of the portfolios contained in this Application
+     *
+     * @returns { "Name": string, "Total return (%)": string; "Total return ($)": number; "Daily return (%)": string; "Daily return ($)": number }[]
+     * array giving a brief summary of all of the portfolios belonging to this Manager
+     */
+    public portfoliosToTable(): [{ "Name": string } & performaceObj] {
+        let table = [];
+        let stockLogic: StockLogic = new StockLogic();
+        for (let i = 0; i < this._portfolios.length; i++) {
+            table.push(this._portfolios[i].summary(stockLogic))
+        }
+        // @ts-ignore
+        return table;
+    }
 
     /**
      * Handles changing the name of a portfolio. Check if the name is valid before making the change
-     * 
+     *
      * note: made static so it can be passed around as a handle easily. Couldn't get the way I wanted with a non static function
      * 
      * @param newName string for the new name of a portfolio
      * @param portfolio Portfolio object to have it's name changed
-     * @param portfolioManager PortfolioManager object that the portfolio belongs to
      * @returns boolean if the name change was completed
      */
-    public changePortfolioName(newName : string, portfolio : Portfolio) : boolean {
-        if (this.portfolioNameChangeIsValid(newName, portfolio)){
+    public changePortfolioName(newName: string, portfolio: Portfolio): boolean {
+        if (this.portfolioNameChangeIsValid(newName, portfolio)) {
             portfolio.name = newName;
             return true;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
-    static get portfolioNameRequirements() : string {
-        return `A) Portfolio ${CheckInput.nameRequirements}\nand B) must not clash with any other portfolios already existing`; 
-    } 
+    /**
+     * Returns a string describing the requirements for a valid portfolio name
+     *
+     * @returns string as described
+     */
+    static get portfolioNameRequirements(): string {
+        return `A) Portfolio ${CheckInput.nameRequirements}\nand B) must not clash with any other portfolios already existing`;
+    }
 
     /**
      * Attempts to find a Portfolio with inputted name in this manager
-     * 
+     *
      * @param portfolioName string for the name of the Portfolio object being looked for
      * @returns Portfolio object if it was found, otherwise null
      */
-    public findPortfolio(portfolioName : string) : Portfolio {
-        for (let i = 0; i < this._portfolios.length; i ++){
-            let currPortfolio : Portfolio = this._portfolios[i];
-            if (currPortfolio.name == portfolioName){
+    public findPortfolio(portfolioName: string): Portfolio {
+        for (let i = 0; i < this._portfolios.length; i++) {
+            let currPortfolio: Portfolio = this._portfolios[i];
+            if (currPortfolio.name == portfolioName) {
                 return currPortfolio;
             }
         }
@@ -155,9 +169,18 @@ export class PortfolioManager {
     }
 
     /**
+     * Finds out if this PortfolioManager is empty or not
+     *
+     * @returns boolean value if this object is empty or not
+     */
+    public isEmpty(): boolean {
+        return this._portfolios.length == 0;
+    }
+
+    /**
      * Clears the list of portfolios for this deck manager
      */
-    public removeAll() : void {
+    public removeAll(): void {
         this._portfolios = [];
     }
 
