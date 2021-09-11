@@ -95,7 +95,14 @@ export class StockLogic {
         return symbol == symbol.toUpperCase();
     }
 
-    public static calcReturn(initialValue: number, currentValue: number) {
+    /**
+     * Calculates dollar and percentage return for a Holding or Portfolio
+     *
+     * @param initialValue number for the initial dollar value    value
+     * @param currentValue number for the current dollar value
+     * @returns {dollarReturn: number, percReturn: string } object describing the dollar and percentage return of a Holding/Portfolio
+     */
+    public static calcReturn(initialValue: number, currentValue: number): { dollarReturn: number, percReturn: string } {
         let dollarReturn: number = this.calcDollarReturn(initialValue, currentValue);
         let percReturn: string = this.calcPercReturn(initialValue, dollarReturn);
         return {
@@ -107,28 +114,43 @@ export class StockLogic {
     /**
      * Finds and returns the dollar return for a Holding or Portfolio
      *
-     * @param initialValue number
-     * @param currentValue number
+     * @param initialValue number initial value of a Holding or Portfolio
+     * @param currentValue number for the current dollar value of a Holding or Portfolio
      * @returns number for the dollar return of a Portfolio or Holding
      * @private
      */
-    private static calcDollarReturn(initialValue: number, currentValue: number) {
-        return currentValue - initialValue;
+    private static calcDollarReturn(initialValue: number, currentValue: number): number {
+        return Number((currentValue - initialValue).toFixed(2));
     }
 
+    /**
+     * Finds and returns the percentage return for a Holding or a Portfolio
+     *
+     * @param initialValue number initial value of a Holding or Portfolio
+     * @param dollarReturn number for the dollar return of a Holding or Portfolio
+     * @returns string percentage rounded to 2 decimal places for the percentage return
+     * @private
+     */
     private static calcPercReturn(initialValue: number, dollarReturn: number): string {
         return this.calcPercentage(dollarReturn, initialValue);
     }
 
     /**
      * Calculates a percentage given a numerator and denominator
+     * Handles division by zero by just returning zero, and rounds to 2 decimal places
      *
      * @param numerator number expressing the top of the fraction
      * @param denominator number expressing the bottom of the fraction
      * @returns string expressing the percentage proportion between numerator and the denominator.
      */
     public static calcPercentage(numerator: number, denominator: number): string {
-        return `${(numerator / denominator) * 100}%`
+        let percentage: number;
+        if (denominator == 0) {
+            percentage = 0
+        } else {
+            percentage = (numerator / denominator) * 100
+        }
+        return `${percentage.toFixed(2)}%`
     }
 
     /**
