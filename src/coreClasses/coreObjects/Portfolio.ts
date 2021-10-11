@@ -40,7 +40,7 @@ export class Portfolio extends Measurable {
      * giving a summary of this portfolio
      */
     public summary(stockLogic: StockLogic): { "Name": string } & performaceObj {
-        const descriptionObj: { "Name": string } = {"Name": this._name};
+        const descriptionObj = {"Name": this._name};
         return Object.assign(descriptionObj, super.performanceSummary(stockLogic));
     }
 

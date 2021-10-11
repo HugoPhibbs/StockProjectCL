@@ -14,7 +14,7 @@ class SaveApp {
 
     private saveSession() : boolean {
         // Returns boolean if session was successfully saved
-        let userName : string = this._appEnvironment.user.name;
+        let userName = this._appEnvironment.user.name;
         return false;
     }
 }

@@ -55,7 +55,7 @@ export class LoadApp {
      */
     public createMainMenu(): void {
         assert(this._appEnvironment != undefined);
-        let mainMenuUILogic: MainMenuUI = new MainMenuUI(this._appEnvironment);
+        let mainMenuUILogic = new MainMenuUI(this._appEnvironment);
         mainMenuUILogic.start()
     }
 
@@ -81,7 +81,7 @@ export class LoadApp {
         let user = new User(userName);
         this._appEnvironment = new AppEnvironment(user);
         let serializedJSON = ess.serialize(this._appEnvironment, User);
-        let sessionDirectory: string = this.sessionDirectory(userName)
+        let sessionDirectory = this.sessionDirectory(userName)
         fs.writeFileSync(sessionDirectory, serializedJSON, 'utf-8')
         return true;
     }

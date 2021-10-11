@@ -22,7 +22,7 @@ export class PortfolioManager {
      */
     public newPortfolio(newPortfolioName : string) : boolean {
         if (this.canAddPortfolio(newPortfolioName)) {
-            let portFolio : Portfolio = new Portfolio(newPortfolioName);
+            let portFolio = new Portfolio(newPortfolioName);
             return this.addPortfolio(portFolio);
         }
         else {
@@ -82,10 +82,9 @@ export class PortfolioManager {
      * @returns boolean if the portfolio was removed. false if the portfolio isn't contained in this manager
      */
     public removePortfolio(portfolioName : string) :boolean {
-        // Handles deleting a portfolio
         if (this.includes(portfolioName)){
-            let portfolio : Portfolio = this.findPortfolio(portfolioName);
-            let index : number = this._portfolios.indexOf(portfolio)
+            let portfolio = this.findPortfolio(portfolioName);
+            let index = this._portfolios.indexOf(portfolio)
             this._portfolios.splice(index, 1);
             return true;
         }
@@ -118,7 +117,7 @@ export class PortfolioManager {
      */
     public portfoliosToTable(): [{ "Name": string } & performaceObj] {
         let table = [];
-        let stockLogic: StockLogic = new StockLogic();
+        let stockLogic = new StockLogic();
         for (let i = 0; i < this._portfolios.length; i++) {
             table.push(this._portfolios[i].summary(stockLogic))
         }
@@ -160,7 +159,7 @@ export class PortfolioManager {
      */
     public findPortfolio(portfolioName: string): Portfolio {
         for (let i = 0; i < this._portfolios.length; i++) {
-            let currPortfolio: Portfolio = this._portfolios[i];
+            let currPortfolio = this._portfolios[i];
             if (currPortfolio.name == portfolioName) {
                 return currPortfolio;
             }
@@ -174,7 +173,7 @@ export class PortfolioManager {
      * @returns boolean value if this object is empty or not
      */
     public isEmpty(): boolean {
-        return this._portfolios.length == 0;
+        return (this._portfolios.length == 0);
     }
 
     /**

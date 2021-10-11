@@ -13,7 +13,7 @@ export default abstract class Measurable {
      * Method to return any necessary dollar values for this object.
      * For example, may want to return the initial dollar value of a Holding/Portfolio.
      *
-     * @param stockLogic
+     * @param stockLogic StockLogic object for this application
      * @returns object describing the dollar values of this Measurable object
      * @protected
      */
@@ -33,9 +33,9 @@ export default abstract class Measurable {
      * @returns performaceObj object detailing the performance of a Holding
      */
     protected performanceSummary(stockLogic: StockLogic): performaceObj {
-        let dollarValues: { prevCloseValue: number; initialValue: number; prevOpenValue: number } = this.dollarValues(stockLogic);
-        let totalReturn: { dollarReturn: number, percReturn: string } = StockLogic.calcReturn(dollarValues.initialValue, dollarValues.prevCloseValue);
-        let dailyReturn: { dollarReturn: number, percReturn: string } = StockLogic.calcReturn(dollarValues.prevOpenValue, dollarValues.prevCloseValue);
+        let dollarValues = this.dollarValues(stockLogic);
+        let totalReturn = StockLogic.calcReturn(dollarValues.initialValue, dollarValues.prevCloseValue);
+        let dailyReturn = StockLogic.calcReturn(dollarValues.prevOpenValue, dollarValues.prevCloseValue);
         return {
             "Total return ($)": totalReturn.dollarReturn,
             "Total return (%)": totalReturn.percReturn,

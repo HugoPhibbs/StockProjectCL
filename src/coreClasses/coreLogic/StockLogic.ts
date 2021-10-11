@@ -1,6 +1,7 @@
 /**
  * Class to do any logic to do with the polygon.io api\
  */
+
 export class StockLogic {
 
     /**
@@ -43,7 +44,7 @@ export class StockLogic {
         if (!StockLogic.symbolIsUpperCase(symbol) || symbol == "") {
             return false;
         } else {
-            let done: boolean = false;
+            let done = false;
             let data: { results: object[] };
             let query: any;
             this._ref.tickers(query = {ticker: symbol}).then(
@@ -59,20 +60,65 @@ export class StockLogic {
     }
 
     /**
+     * Returns the open and close prices for a year ago from the current date
+     *
+     * @param symbol string for the symbol of a ticker to find the prices for
+     * @returns {close: number, open: number} object describing opening and closing prices as described
+     */
+    public yearlyOpenClose(symbol : string) : {close: number, open: number}{
+        let yearAgoDate = StockLogic.yearAgoDate();
+        return this.dailyOpenClose(symbol, yearAgoDate);
+    }
+
+    /**
+     * Finds the date for a year ago from the current date
+     *
+     * @private
+     * @returns string describing the date a year ago from the current date in a YYYY-DD-MM format
+     */
+    private static yearAgoDate() : string{
+        let date = new Date();
+        let yearAgoDate = new Date(date.getFullYear()-1, date.getMonth(), date.getDay());
+        return yearAgoDate.toISOString().substring(0, 10); // Get date portion out
+    }
+
+    /**
+     * Finds the opening and closing price for a given date for a symbol belonging to a Ticker
+     * <p>
+     * Not refactored with previousOpenClose(symbol) because previousOpenClose automatically gets the last trading day
+     *
+     * @param symbol string for the symbol of a ticker to be queried
+     * @param date string for the date that open and close data is to be found for
+     * @returns { close: number, open: number } object describing opening and closing prices of the inputted symbol
+     */
+    public dailyOpenClose(symbol : string, date : string) {
+        let done = false;
+        let data : any;
+        this._rest.stocks.dailyOpenClose(symbol, date).then(
+            (res : any) => {
+                data = res;
+                done = true;
+            }
+        );
+        this._deAsync.loopWhile(() =>  {
+            return !done
+        })
+        let result: { close: number, open: number } = data.results[0];
+        return {close: result.close, open: result.open}
+    }
+    /**
      * Finds an object describing the previous day's trading for a stock
      * <p>
      * WARNING: Does not check if a symbol exists before querying!. Please make sure that a symbol exists for a ticker in
      * Polygon.io before calling this function!
      *
-     * @param _symbol string for the symbol to be looked up
+     * @param symbol string for the symbol to be looked up
      * @returns {close: number, open : number} object describing previous day's stock movement
      */
-    public previousDayData(_symbol: string): { close: number, open: number } {
-        // Finds the last closing price for a symbol
-        let done: boolean = false;
+    public previousDayData(symbol: string): { close: number, open: number } {
+        let done = false;
         let data: any;
-        let symbol: string;
-        this._rest.stocks.previousClose(symbol = _symbol).then(
+        this._rest.stocks.previousClose(symbol).then(
             (res: any) => {
                 data = res;
                 done = true;
@@ -103,8 +149,8 @@ export class StockLogic {
      * @returns {dollarReturn: number, percReturn: string } object describing the dollar and percentage return of a Holding/Portfolio
      */
     public static calcReturn(initialValue: number, currentValue: number): { dollarReturn: number, percReturn: string } {
-        let dollarReturn: number = this.calcDollarReturn(initialValue, currentValue);
-        let percReturn: string = this.calcPercReturn(initialValue, dollarReturn);
+        let dollarReturn = this.calcDollarReturn(initialValue, currentValue);
+        let percReturn = this.calcPercReturn(initialValue, dollarReturn);
         return {
             dollarReturn: dollarReturn,
             percReturn: percReturn
