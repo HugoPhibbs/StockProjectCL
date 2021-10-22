@@ -50,12 +50,45 @@ export class NewHoldingUI extends UILogic {
      * Handles creating a holding from what is entered by a user
      */
     private createHolding() {
+        let details = this.getDetails();
+        this.confirmCreation(details.symbol, details.shares, details.buyPrice);
+    }
+
+    /**
+     * Gets the details of the Holding that a user wants to create and returns them
+     *
+     * @private
+     * @returns {symbol : string, shares : number, buyPrice : number} object as described
+     */
+    private getDetails() : {symbol : string, shares : number, buyPrice : number} {
         let symbol: string = this.enterSymbol();
         let shares: number = NewHoldingUI.enterShares();
         let buyPrice: number = NewHoldingUI.enterBuyPrice();
-        let holding: Holding = new Holding(symbol, shares, buyPrice);
-        this._portfolio.addHolding(holding);
+        return {symbol : symbol, shares : shares, buyPrice : buyPrice}
     }
+
+
+    /**
+     * Handles asking a user if they would like to confirm adding a Holding to a portfolio
+     *
+     * @param symbol string for the symbol of the holding that a user would like to create
+     * @param shares number for the amount of shares bought for a holding
+     * @param buyPrice number for the share buy price of this Holding
+     * @private
+     */
+    private confirmCreation(symbol : string, shares : number, buyPrice : number) {
+        let wantsToCreate = UIMenu.inputYesOrNo("Would you like to create this holding?");
+        
+        if (wantsToCreate) {
+            let holding: Holding = new Holding(symbol, shares, buyPrice);
+            this._portfolio.addHolding(holding);
+        }
+        else {
+            UIMenu.print("Adding of Holding aborted!");
+        }
+    }
+
+    
 
     /**
      * Handles asking a user if they would like to returning to editing the portfolio that the newly created holding(s) belong to
